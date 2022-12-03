@@ -1,2 +1,3 @@
-let srt: string = 'fefe'
-console.log(srt)
+import {app} from './firebase'
+
+console.log(app)

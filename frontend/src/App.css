@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
 *{
 	margin: 0px;
 	padding: 0px;
@@ -15,7 +17,7 @@ body{
 	background-color: var(--tg-theme-bg-color);
 	color: var(--tg-theme-text-color);
 	font-size: 20px;
-	font-family: Tahoma;
+	font-family: 'Roboto', sans-serif;
 }
 
 a{

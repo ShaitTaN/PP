@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
+import { useTelegram } from "../../hooks/useTelegram";
 import "./header.css";
 
 const Header = () => {
+	const {user} = useTelegram()
   const isAuth = true;
 
   return (
@@ -11,7 +13,7 @@ const Header = () => {
       </Link>
       {isAuth ? (
         <div className="header__user">
-          <span>UserName</span>
+          <span>{user.username}</span>
           <button>Выход</button>
         </div>
       ) : (

@@ -18,3 +18,10 @@
 	left: calc(100% + 2px);
 	top: 0;
 }
+.header__user button{
+	color: var(--tg-theme-link-color);
+	font-size: 20px;
+	border: none;
+	cursor: pointer;
+	background: transparent;
+}

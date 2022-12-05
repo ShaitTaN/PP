@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import "./header.css";
 
@@ -13,7 +12,7 @@ const Header = () => {
       {isAuth ? (
         <div className="header__user">
           <span>UserName</span>
-          <a>Выход</a>
+          <button>Выход</button>
         </div>
       ) : (
         <Link className="header__link" to={"/auth"}>

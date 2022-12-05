@@ -7,12 +7,6 @@ import MainPage from './pages/MainPage/MainPage';
 import LoginPage from './pages/AuthPage/LoginPage';
 
 function App() {
-	const {onClose} = useTelegram()
-
-	useEffect(() => {
-
-	},[])
-
   return (
     <div className='wrapper'>
 			<Header/>

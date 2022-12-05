@@ -1,13 +1,27 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from "react";
+import { Link } from "react-router-dom";
+import "./header.css";
 
 const Header = () => {
-	return (
-		<div className='header'>
-			<Link to={'/'}>Главная</Link>
-			<Link to={'/auth'}>Авторизация</Link>
-		</div>
-	)
-}
+  const isAuth = true;
 
-export default Header
+  return (
+    <div className="header">
+      <Link className="header__link" to={"/"}>
+        Главная
+      </Link>
+      {isAuth ? (
+        <div className="header__user">
+          <span>UserName</span>
+          <a>Выход</a>
+        </div>
+      ) : (
+        <Link className="header__link" to={"/auth"}>
+          Авторизация
+        </Link>
+      )}
+    </div>
+  );
+};
+
+export default Header;

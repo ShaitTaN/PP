@@ -1,31 +1,38 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 
-*{
-	margin: 0px;
-	padding: 0px;
-	box-sizing: border-box;
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
 }
 
-:root{
-	--tg-theme-bg-color: #212121;
-	--tg-theme-text-color: #ffffff;
-	--tg-theme-link-color: #8774e1;
-	--tg-theme-secondary-bg-color: #0f0f0f;
+:root {
+  --tg-theme-bg-color: #212121;
+  --tg-theme-text-color: #ffffff;
+  --tg-theme-link-color: #8774e1;
+  --tg-theme-secondary-bg-color: #0f0f0f;
+  --tg-theme-hint-color: #aaaaaa;
 }
 
-body{
-	background-color: var(--tg-theme-bg-color);
-	color: var(--tg-theme-text-color);
-	font-size: 20px;
-	font-family: 'Roboto', sans-serif;
+body {
+  background-color: var(--tg-theme-bg-color);
+  color: var(--tg-theme-text-color);
+  font-size: 20px;
+  font-family: "Roboto", sans-serif;
 }
 
-a{
-	text-decoration: none;
-	color: var(--tg-theme-link-color);
+a {
+  text-decoration: none;
+  color: var(--tg-theme-link-color);
 }
 
-.wrapper{
-	margin: 0 auto;
-	max-width: 1200px;
+.wrapper {
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 16px;
+  }
 }

@@ -7,7 +7,7 @@ const Header = () => {
   const isAuth = false;
 
   return (
-    <div className="header">
+    <header className="header">
       <Link className="header__link" to={"/"}>
         Главная
       </Link>
@@ -21,7 +21,7 @@ const Header = () => {
           Авторизация
         </Link>
       )}
-    </div>
+    </header>
   );
 };
 

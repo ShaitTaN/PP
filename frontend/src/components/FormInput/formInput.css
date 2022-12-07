@@ -1,0 +1,27 @@
+.formInput {
+  margin-bottom: 20px;
+  position: relative;
+}
+.formInput input {
+  outline: none;
+  background-color: transparent;
+  border: none;
+  width: 100%;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--textSecColor);
+}
+.formInput input:focus ~ span {
+  transform: translateY(-20px) scale(1);
+}
+.formInput span {
+  position: absolute;
+  display: block;
+  left: 0;
+  top: calc(0% + 10px);
+  color: var(--tg-theme-hint-color);
+  transform: scale(0.9);
+  transition: transform 0.1s linear;
+}
+.formInput.active span {
+  transform: translateY(-20px) scale(1);
+}

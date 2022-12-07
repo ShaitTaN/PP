@@ -15,7 +15,7 @@ const MainPage = () => {
 				<h2>Хотите задать вопрос или сделать заказ?</h2>
 				<div className="mainPage__feedback-phone">
 					<p>Свяжитесь с нами по номеру:</p>
-					<p>+79771223039</p>
+					<p>+7(977)122-30-39</p>
 					<span>(Telegram / WhatsApp)</span>
 				</div>
 				<div className="mainPage__feedback-soc">

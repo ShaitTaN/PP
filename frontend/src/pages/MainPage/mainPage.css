@@ -47,6 +47,9 @@
 .mainPage__feedback-phone p{
 	margin-bottom: 10px;
 }
+.mainPage__feedback-phone p:last-of-type{
+	letter-spacing: 5px;
+}
 .mainPage__feedback-phone span{
 	color: var(--tg-theme-hint-color);
 }

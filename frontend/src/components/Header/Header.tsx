@@ -4,7 +4,7 @@ import "./header.css";
 
 const Header = () => {
 	const {user} = useTelegram()
-  const isAuth = true;
+  const isAuth = false;
 
   return (
     <div className="header">
@@ -13,7 +13,7 @@ const Header = () => {
       </Link>
       {isAuth ? (
         <div className="header__user">
-          <span>{user.username}</span>
+          <span>{user?.username || 'USER'}</span>
           <button>Выход</button>
         </div>
       ) : (

@@ -9,7 +9,7 @@ function App() {
     <div className='wrapper'>
 			<Header/>
 			<Routes>
-				<Route index element={<MainPage/>}/>
+				<Route path='/' element={<MainPage/>}/>
 				<Route path='/auth' element={<LoginPage/>}/>
 			</Routes>
     </div>

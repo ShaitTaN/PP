@@ -1,32 +1,33 @@
-.mainPage{
-	margin-top: 25px;
+.mainPage {
+  margin-top: 25px;
 }
-.mainPage h2{
-	color: var(--tg-theme-text-color);
-	margin-bottom: 10px;
-	text-align: center;
-	font-size: 24px;
+.mainPage h2 {
+  color: var(--tg-theme-text-color);
+  margin-bottom: 10px;
+  text-align: center;
+  font-size: 24px;
 }
-.mainPage__img{
-	position: relative;
-	background-image: url('../../../public/mikrotik.jpg');
-	height: 700px;
+.mainPage__img {
+  position: relative;
+  background-image: url("../../../public/mikrotik.jpg");
+  height: 470px;
+  background-size: cover;
 }
-.mainPage__img-info{
-	position: absolute;
-	width: 50%;
-	height: 100%;
-	background-color: rgba(0,0,0,.5);
-	padding: 10px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-direction: column;
+.mainPage__img-info {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
-.mainPage__img-info h3{
-	margin-bottom: 20px;
+.mainPage__img-info h3 {
+  margin-bottom: 20px;
 }
 
-.mainPage__feedback{
-	margin-top: 25px;
+.mainPage__feedback {
+  margin-top: 25px;
 }

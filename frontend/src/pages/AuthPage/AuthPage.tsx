@@ -11,9 +11,9 @@ const AuthPage = () => {
 
   React.useEffect(() => {
 		console.log('effect')
-		tg.MainButton.setParams({text: 'Отправить'})
+		tg?.MainButton.setParams({text: 'Отправить'})
     tg?.MainButton.show()
-  }, []);
+  }, [tg.MainButton]);
 
   return (
     <div className="authPage">

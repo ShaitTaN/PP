@@ -12,7 +12,7 @@ const AuthPage = () => {
   React.useEffect(() => {
     showButton();
     return hideButton();
-  }, []);
+  }, [showButton, hideButton]);
 
   return (
     <div className="authPage">

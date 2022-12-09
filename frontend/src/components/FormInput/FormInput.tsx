@@ -1,18 +1,18 @@
 import React, { FC } from "react";
-import './formInput.scss'
+import './formInput.css'
 
 interface Props{
-	type: string;
+	type?: string;
 	placeholder: string;
 	value: string;
 	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const FormInput: FC<Props> = ({type, placeholder, value, onChange}) => {
+const FormInput: FC<Props> = ({type = 'text', placeholder, value, onChange}) => {
   return (
     <div className={value ? "formInput active" : "formInput"}>
-      <input type={type} value={value} onChange={onChange}/>
-			<span>{placeholder}</span>
+      <input id={placeholder} type={type} value={value} onChange={onChange}/>
+			<label htmlFor={placeholder} >{placeholder}</label>
     </div>
   );
 };

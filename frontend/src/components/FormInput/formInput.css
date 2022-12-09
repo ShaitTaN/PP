@@ -3,25 +3,26 @@
   position: relative;
 }
 .formInput input {
+	color: var(--tg-theme-text-color);
+	font-size: 20px;
   outline: none;
   background-color: transparent;
   border: none;
   width: 100%;
   padding: 10px 0;
-  border-bottom: 1px solid var(--textSecColor);
+  border-bottom: 1px solid var(--tg-theme-text-color);
 }
-.formInput input:focus ~ span {
-  transform: translateY(-20px) scale(1);
+.formInput input:focus ~ label {
+  transform: translateY(-22px);
 }
-.formInput span {
+.formInput label {
   position: absolute;
   display: block;
   left: 0;
   top: calc(0% + 10px);
   color: var(--tg-theme-hint-color);
-  transform: scale(0.9);
   transition: transform 0.1s linear;
 }
-.formInput.active span {
-  transform: translateY(-20px) scale(1);
+.formInput.active label {
+  transform: translateY(-22px);
 }

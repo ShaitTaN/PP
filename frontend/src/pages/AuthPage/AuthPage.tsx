@@ -10,7 +10,6 @@ const AuthPage = () => {
   const { tg } = useTelegram();
 
   React.useEffect(() => {
-    console.log("effect");
     tg?.MainButton.setParams({ text: "Отправить" });
     tg?.MainButton.show();
 
@@ -18,6 +17,14 @@ const AuthPage = () => {
       tg?.MainButton.hide();
     };
   }, [tg.MainButton]);
+
+  React.useEffect(() => {
+    if (!email || !phone || !code) {
+      tg?.MainButton.disable();
+    } else {
+      tg?.MainButton.enable();
+    }
+  }, [tg.MainButton, email, phone, code]);
 
   return (
     <div className="authPage">

@@ -13,7 +13,7 @@ bot.on('message', async (msg) => {
 		await bot.sendMessage(chatId, 'Ниже появится форма для авторизации', {
 			reply_markup: {
 				inline_keyboard: [
-					[{text: 'Заполнить форму', web_app: {url: webAppUrl}}]
+					[{text: 'Заполнить форму', web_app: {url: webAppUrl + '/auth'}}]
 				]
 			}
 		})

@@ -7,12 +7,13 @@ const AuthPage = () => {
   const [email, setEmail] = React.useState("");
   const [phone, setPhone] = React.useState("");
   const [code, setCode] = React.useState("");
-  const { showButton, hideButton } = useTelegram();
+  const { tg } = useTelegram();
 
   React.useEffect(() => {
-    showButton();
-    return hideButton();
-  }, [showButton, hideButton]);
+		console.log('effect')
+		tg.MainButton.setParams({text: 'Отправить'})
+    tg?.MainButton.show()
+  }, []);
 
   return (
     <div className="authPage">

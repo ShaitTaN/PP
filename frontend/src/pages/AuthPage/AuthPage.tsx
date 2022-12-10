@@ -20,12 +20,12 @@ const AuthPage = () => {
 
 	React.useEffect(() => {
 		console.log('effect')
-		tg.MainButton.onClick(onSendData)
-		// tg.onEvent('mainButtonClicked', onSendData)
+		// tg.MainButton.onClick(onSendData)
+		tg.onEvent('mainButtonClicked', onSendData)
 
 		return () => {
-			// tg.offEvent('mainButtonClicked', onSendData)
-			tg.MainButton.offClick(onSendData)
+			tg.offEvent('mainButtonClicked', onSendData)
+			// tg.MainButton.offClick(onSendData)
 		}
 	}, [tg, onSendData]);
 
@@ -38,13 +38,13 @@ const AuthPage = () => {
     };
   }, [tg.MainButton]);
 
-  // React.useEffect(() => {
-  //   if (!email || !phone || !code) {
-  //     tg?.MainButton.disable();
-  //   } else {
-  //     tg?.MainButton.enable();
-  //   }
-  // }, [tg.MainButton, email, phone, code]);
+  React.useEffect(() => {
+    if (!email || !phone || !code) {
+      tg?.MainButton.disable();
+    } else {
+      tg?.MainButton.enable();
+    }
+  }, [tg.MainButton, email, phone, code]);
 
   return (
     <div className="authPage">

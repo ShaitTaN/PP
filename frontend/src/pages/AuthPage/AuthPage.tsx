@@ -9,6 +9,23 @@ const AuthPage = () => {
   const [code, setCode] = React.useState("");
   const { tg } = useTelegram();
 
+	const onSendData = React.useCallback(() => {
+		const data = {
+			email,
+			phone,
+			code,
+		}
+		tg.sendData(data)
+	}, [tg, email, phone, code])
+
+	React.useEffect(() => {
+		tg.onEvent('mainButtonClicked', onSendData)
+
+		return () => {
+			tg.offEvent('mainButtonClicked', onSendData)
+		}
+	}, [tg, onSendData]);
+
   React.useEffect(() => {
     tg?.MainButton.setParams({ text: "Отправить" });
     tg?.MainButton.show();

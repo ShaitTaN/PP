@@ -15,7 +15,7 @@ const AuthPage = () => {
 			phone,
 			code,
 		}
-		tg.sendData(data)
+		tg.sendData({data})
 	}, [tg, email, phone, code])
 
 	React.useEffect(() => {

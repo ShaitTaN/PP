@@ -20,11 +20,12 @@ const AuthPage = () => {
 
 	React.useEffect(() => {
 		console.log('effect')
-
-		tg.onEvent('mainButtonClicked', onSendData)
+		tg.MainButton.onClick(onSendData)
+		// tg.onEvent('mainButtonClicked', onSendData)
 
 		return () => {
-			tg.offEvent('mainButtonClicked', onSendData)
+			// tg.offEvent('mainButtonClicked', onSendData)
+			tg.MainButton.offClick(onSendData)
 		}
 	}, [tg, onSendData]);
 

@@ -15,7 +15,7 @@ const AuthPage = () => {
 			phone,
 			code,
 		}
-		tg.sendData(data)
+		tg.sendData(JSON.stringify(data))
 	}, [tg, email, phone, code])
 
 	React.useEffect(() => {

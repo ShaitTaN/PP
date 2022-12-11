@@ -1,0 +1,17 @@
+.mainButton{
+	border: none;
+	outline: none;
+	background: transparent;
+	cursor: pointer;
+	font-size: 20px;
+	color: var(--tg-theme-text-color);
+	padding: 10px 0;
+  border: 1px solid var(--tg-theme-text-color);
+	width: 100%;
+}
+.mainButton:hover{
+	opacity: 0.8;
+}
+.mainButton:active{
+	background: rgba(0, 0, 0, .1);
+}

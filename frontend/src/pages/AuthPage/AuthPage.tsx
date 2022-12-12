@@ -62,7 +62,7 @@ const AuthPage: React.FC<AuthPageProps> = ({
         user
           .getIdToken(true)
           .then((idToken) => {
-            fetch("http://localhost:3030/", {
+            fetch("http://localhost:3030/auth", {
               method: "POST",
               headers: {
                 AuthToken: idToken,

@@ -9,6 +9,7 @@ import {
   signInWithPhoneNumber,
   onAuthStateChanged,
 } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 declare global {
   interface Window {
@@ -29,6 +30,7 @@ const AuthPage: React.FC<AuthPageProps> = ({
   const [email, setEmail] = React.useState("");
   const [phone, setPhone] = React.useState("+7");
   const [code, setCode] = React.useState("");
+  const navigate = useNavigate();
   const { tg } = useTelegram();
 
   const onSendData = React.useCallback(() => {
@@ -58,7 +60,6 @@ const AuthPage: React.FC<AuthPageProps> = ({
   React.useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-				setIsAuthorized(true)
         user
           .getIdToken(true)
           .then((idToken) => {
@@ -76,6 +77,8 @@ const AuthPage: React.FC<AuthPageProps> = ({
           .catch((error) => {
             console.log(error);
           });
+        setIsAuthorized(true);
+        navigate("/");
       } else {
         generateRecaptcha();
       }

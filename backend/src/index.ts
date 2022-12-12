@@ -4,16 +4,18 @@ import admin from "firebase-admin";
 const serviceAccount = require("../fbServiceAccountKey.json");
 const cors = require("cors");
 
+// Telegram bot
 const token = "5720047994:AAEJpGg3e9jmV1nBc2_tQEoFPNHW2vfSwL0";
 const bot = new TelegramBot(token, { polling: true });
 const webAppUrl = "https://remarkable-crostata-72b9ae.netlify.app";
 
+// Express init
 const PORT = 3030;
 const app: Express = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
-
+// Create auth check middleware
 function checkAuth(req: Request, res: Response, next: NextFunction) {
   if (req.headers.authtoken) {
     admin
@@ -39,6 +41,7 @@ admin.initializeApp({
     "https://production-practice-1e3bf-default-rtdb.europe-west1.firebasedatabase.app",
 });
 
+// Bot logic
 bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
   const text = msg.text;
@@ -62,6 +65,7 @@ bot.on("message", async (msg) => {
   }
 });
 
+// Express routes
 app.post("/auth", (req, res) => {
 	res.header("Access-Control-Allow-Origin", "*");
   res.json({

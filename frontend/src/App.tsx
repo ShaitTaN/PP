@@ -6,9 +6,11 @@ import MainPage from "./pages/MainPage/MainPage";
 import AuthPage from "./pages/AuthPage/AuthPage";
 import { auth } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import { useTelegram } from "./hooks/useTelegram";
 
 function App() {
   const [isAuthorized, setIsAuthorized] = React.useState(false);
+	const { user } = useTelegram();
 
   React.useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -39,7 +41,7 @@ function App() {
 
   return (
     <div className="wrapper">
-      <Header isAuthorized={isAuthorized} setIsAuthorized={setIsAuthorized} />
+      <Header tgUser={user} isAuthorized={isAuthorized} setIsAuthorized={setIsAuthorized} />
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route

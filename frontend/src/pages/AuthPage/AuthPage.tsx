@@ -77,10 +77,8 @@ const AuthPage: React.FC<AuthPageProps> = ({
           .catch((error) => {
             console.log(error);
           });
-				setIsAuthorized(true);
         navigate("/");
       } else {
-				setIsAuthorized(false);
         generateRecaptcha();
       }
     });

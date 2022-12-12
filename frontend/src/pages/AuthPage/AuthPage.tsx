@@ -42,7 +42,7 @@ const AuthPage: React.FC<AuthPageProps> = ({
         tg.sendData(JSON.stringify({result, email}));
       })
       .catch((error: Error) => {
-        tg.sendData("Invalid code.");
+        tg.sendData(JSON.stringify({error, msg: "Invalid code."}));
       });
   }, [tg, code, setIsAuthorized, email]);
 

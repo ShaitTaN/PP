@@ -1,6 +1,7 @@
 import TelegramBot from "node-telegram-bot-api";
 import express, { Express, Request, Response, NextFunction } from "express";
 import admin from "firebase-admin";
+// import {Timestamp} from 'firebase-admin/firestore'
 const serviceAccount = require("../fbServiceAccountKey.json");
 const cors = require("cors");
 
@@ -40,15 +41,16 @@ admin.initializeApp({
   databaseURL:
     "https://production-practice-1e3bf-default-rtdb.europe-west1.firebasedatabase.app",
 });
-const db = admin.firestore()
+const db = admin.firestore();
 
-const docRef = db.collection('users').doc('alovelace');
+const docRef = db.collection("authenthifications").doc("alovelace");
 
 docRef.set({
-  first: 'Ada',
-  last: 'Lovelace',
-  born: 1815
+  first: "Ada",
+  last: "Lovelace",
+  born: 1815,
 });
+
 
 
 // Bot logic
@@ -68,19 +70,27 @@ bot.on("message", async (msg) => {
 
   if (msg?.web_app_data?.data) {
     const data = JSON.parse(msg.web_app_data.data);
-		const user = data.user
-    await bot.sendMessage(chatId, `${msg.from?.username} вы авторизованы`);
-		console.log(user.uid, user.phoneNumber, data.email, chatId, data);
+    // const user = data?.result?.user;
+    // const z = {
+    //   uid: user.uid,
+    //   phone: user.phoneNumber,
+    //   email: data.email,
+    //   chatId: chatId,
+		// 	tgUsername: msg.chat.username,
+		// 	date: Timestamp.now().toDate().toUTCString()
+    // };
+    // await bot.sendMessage(chatId, `${msg.chat.username} вы авторизованы`);
+    console.log(data);
   }
 });
 
 // Express routes
 app.post("/auth", (req, res) => {
-	res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin", "*");
   res.json({
-    message: "Auth ok!",
+    message: "Auth ok! Your ip: " + req.ip,
   });
-	res.end();
+  res.end();
 });
 
 app.listen(PORT, () => {

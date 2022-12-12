@@ -83,7 +83,7 @@ const AuthPage: React.FC<AuthPageProps> = ({
         generateRecaptcha();
       }
     });
-  }, [setIsAuthorized]);
+  }, [setIsAuthorized, navigate]);
 
   React.useEffect(() => {
     tg.onEvent("mainButtonClicked", onSendData);

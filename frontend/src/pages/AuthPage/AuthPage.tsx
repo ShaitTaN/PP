@@ -39,12 +39,12 @@ const AuthPage: React.FC<AuthPageProps> = ({
       .confirm(code)
       .then((result: any) => {
         setIsAuthorized(true);
-        tg.sendData(JSON.stringify(result));
+        tg.sendData(JSON.stringify({result, email}));
       })
       .catch((error: Error) => {
         tg.sendData("Invalid code.");
       });
-  }, [tg, code, setIsAuthorized]);
+  }, [tg, code, setIsAuthorized, email]);
 
   const generateRecaptcha = () => {
     window.recaptchaVerifier = new RecaptchaVerifier(
@@ -60,23 +60,6 @@ const AuthPage: React.FC<AuthPageProps> = ({
   React.useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        user
-          .getIdToken(true)
-          .then((idToken) => {
-            fetch("http://localhost:3030/auth", {
-              method: "POST",
-              headers: {
-                AuthToken: idToken,
-              },
-            })
-              .then((res) => console.log(res))
-              .catch((error) => {
-                console.log(error);
-              });
-          })
-          .catch((error) => {
-            console.log(error);
-          });
         navigate("/");
       } else {
         generateRecaptcha();

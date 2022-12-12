@@ -40,6 +40,16 @@ admin.initializeApp({
   databaseURL:
     "https://production-practice-1e3bf-default-rtdb.europe-west1.firebasedatabase.app",
 });
+const db = admin.firestore()
+
+const docRef = db.collection('users').doc('alovelace');
+
+docRef.set({
+  first: 'Ada',
+  last: 'Lovelace',
+  born: 1815
+});
+
 
 // Bot logic
 bot.on("message", async (msg) => {
@@ -47,7 +57,6 @@ bot.on("message", async (msg) => {
   const text = msg.text;
 
   if (text === "/start") {
-    console.log(msg);
     await bot.sendMessage(chatId, "Нажмите кнопку для авторизации", {
       reply_markup: {
         keyboard: [
@@ -59,9 +68,9 @@ bot.on("message", async (msg) => {
 
   if (msg?.web_app_data?.data) {
     const data = JSON.parse(msg.web_app_data.data);
-    console.log(data.user);
+		const user = data.user
     await bot.sendMessage(chatId, `${msg.from?.username} вы авторизованы`);
-    await bot.sendMessage(chatId, `user - ${JSON.stringify(data.user)}`);
+		console.log(user.uid, user.phoneNumber, data.email, chatId, data);
   }
 });
 

@@ -26,6 +26,10 @@ a {
   color: var(--tg-theme-link-color);
 }
 
+button{
+	font-size: 20px;
+}
+
 .wrapper {
   margin: 0 auto;
   max-width: 1200px;

@@ -1,25 +1,32 @@
 import { Link } from "react-router-dom";
+import { auth } from "../../firebase";
 import { useTelegram } from "../../hooks/useTelegram";
 import "./header.css";
 
-const Header = () => {
-	const {user} = useTelegram()
-  const isAuth = false;
+interface HeaderProps {
+	isAuthorized: boolean;
+	setIsAuthorized: (isAuthorized: boolean) => void;
+}
+
+const Header: React.FC<HeaderProps> = ({isAuthorized, setIsAuthorized}) => {
+	const { user } = useTelegram();
+
+	const onLogout = () => {
+		auth.signOut().then(()=>{
+			setIsAuthorized(false)
+		})
+	}
 
   return (
     <header className="header">
       <Link className="header__link" to={"/"}>
         Главная
       </Link>
-      {isAuth ? (
+      {isAuthorized && (
         <div className="header__user">
-          <span>{user?.username || 'USER'}</span>
-          <button>Выход</button>
+          <span>{user?.username}</span>
+          <button onClick={onLogout}>Выход</button>
         </div>
-      ) : (
-        <Link className="header__link" to={"/auth"}>
-          Авторизация
-        </Link>
       )}
     </header>
   );

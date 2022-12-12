@@ -4,7 +4,11 @@ import MainButton from "../../components/MainButton/MainButton";
 import { useTelegram } from "../../hooks/useTelegram";
 import "./authPage.css";
 import { auth } from "../../firebase";
-import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import {
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+  onAuthStateChanged,
+} from "firebase/auth";
 
 declare global {
   interface Window {
@@ -13,32 +17,70 @@ declare global {
   }
 }
 
-const AuthPage = () => {
+interface AuthPageProps {
+  isAuthorized: boolean;
+  setIsAuthorized: (isAuthorized: boolean) => void;
+}
+
+const AuthPage: React.FC<AuthPageProps> = ({
+  isAuthorized,
+  setIsAuthorized,
+}) => {
   const [email, setEmail] = React.useState("");
-  const [phone, setPhone] = React.useState("+79771223039");
+  const [phone, setPhone] = React.useState("+7");
   const [code, setCode] = React.useState("");
   const { tg } = useTelegram();
 
   const onSendData = React.useCallback(() => {
-		const confirmationResult = window.confirmationResult;
-		confirmationResult.confirm(code).then((result: any) => {
-			tg.sendData(JSON.stringify(result));
-		}).catch((error: Error) => {
-			tg.sendData('Invalid code.');
-		});
+    const confirmationResult = window.confirmationResult;
+    confirmationResult
+      .confirm(code)
+      .then((result: any) => {
+        setIsAuthorized(true);
+        tg.sendData(JSON.stringify(result));
+      })
+      .catch((error: Error) => {
+        tg.sendData("Invalid code.");
+      });
   }, [tg, code]);
-	
-	const generateRecaptcha = () => {
-		window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
-			'size': 'invisible',
-			'callback': (response: any) => {
-			}
-		}, auth);
-	}
-	
-	React.useEffect(() => {
-		generateRecaptcha();
-	}, [])
+
+  const generateRecaptcha = () => {
+    window.recaptchaVerifier = new RecaptchaVerifier(
+      "recaptcha-container",
+      {
+        size: "invisible",
+        callback: (response: any) => {},
+      },
+      auth
+    );
+  };
+
+  React.useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+				setIsAuthorized(true)
+        user
+          .getIdToken(true)
+          .then((idToken) => {
+            fetch("http://localhost:3030/", {
+              method: "POST",
+              headers: {
+                AuthToken: idToken,
+              },
+            })
+              .then((res) => console.log(res))
+              .catch((error) => {
+                console.log(error);
+              });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        generateRecaptcha();
+      }
+    });
+  }, [setIsAuthorized]);
 
   React.useEffect(() => {
     tg.onEvent("mainButtonClicked", onSendData);
@@ -65,7 +107,7 @@ const AuthPage = () => {
     }
   }, [tg.MainButton, email, phone, code]);
 
-	const onSendCode = () => {
+  const onSendCode = () => {
     const appVerifier = window.recaptchaVerifier;
 
     signInWithPhoneNumber(auth, phone, appVerifier)
@@ -75,16 +117,12 @@ const AuthPage = () => {
       .catch((error) => {
         console.log(error);
       });
-	}
+  };
 
-	// const onClick = () => {
-	// 	const confirmationResult = window.confirmationResult;
-	// 	confirmationResult.confirm(code).then((result: any) => {
-	// 		console.log(result);
-	// 	}).catch((error: Error) => {
-	// 		console.log('Invalid code.');
-	// 	});
-	// }
+  const onClick = async () => {
+    const res = await fetch("http://localhost:3030/");
+    console.log(res);
+  };
 
   return (
     <div className="authPage">
@@ -101,14 +139,14 @@ const AuthPage = () => {
       />
       <div className="authPage__checkCode">
         <MainButton onClick={onSendCode}>Выслать код по SMS</MainButton>
-				<div id="recaptcha-container"></div>
+        <div id="recaptcha-container"></div>
       </div>
       <FormInput
         placeholder="Код подтверждения:"
         value={code}
         onChange={(e) => setCode(e.target.value)}
       />
-			{/* <button onClick={onClick}>ok</button> */}
+      <button onClick={onSendData}>ok</button>
     </div>
   );
 };

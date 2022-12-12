@@ -42,7 +42,7 @@ const AuthPage: React.FC<AuthPageProps> = ({
       .catch((error: Error) => {
         tg.sendData("Invalid code.");
       });
-  }, [tg, code]);
+  }, [tg, code, setIsAuthorized]);
 
   const generateRecaptcha = () => {
     window.recaptchaVerifier = new RecaptchaVerifier(
@@ -117,11 +117,6 @@ const AuthPage: React.FC<AuthPageProps> = ({
       .catch((error) => {
         console.log(error);
       });
-  };
-
-  const onClick = async () => {
-    const res = await fetch("http://localhost:3030/");
-    console.log(res);
   };
 
   return (

@@ -137,7 +137,6 @@ const AuthPage: React.FC<AuthPageProps> = ({
         value={code}
         onChange={(e) => setCode(e.target.value)}
       />
-      <button onClick={onSendData}>fefef</button>
     </div>
   );
 };

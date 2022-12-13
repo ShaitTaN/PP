@@ -1,7 +1,7 @@
 import TelegramBot from "node-telegram-bot-api";
 import express, { Express, Request, Response, NextFunction } from "express";
 import admin from "firebase-admin";
-// import {Timestamp} from 'firebase-admin/firestore'
+import { Timestamp } from "firebase-admin/firestore";
 const serviceAccount = require("../fbServiceAccountKey.json");
 const cors = require("cors");
 
@@ -43,15 +43,32 @@ admin.initializeApp({
 });
 const db = admin.firestore();
 
-const docRef = db.collection("authenthifications").doc("alovelace");
+// Firebase collections
+const case1DocRef = db.collection("case1");
+const usersDocRef = db.collection("users");
 
-docRef.set({
-  first: "Ada",
-  last: "Lovelace",
-  born: 1815,
-});
+// Firebase functions
+const addCase1Doc = (
+  flag: "VZLOM" | "VYDACHA",
+  msg: TelegramBot.Message
+) => {
+  case1DocRef.add({
+    str: Math.cos(Math.random()),
+    date: Timestamp.now().toDate().toUTCString(),
+    usernamse: msg.chat.username,
+    flag: flag,
+  });
+};
 
-
+const addUserDoc = (userName: string, msg: TelegramBot.Message, data: any) => {
+	usersDocRef.doc(userName).set({
+		uid: data.result.user.uid,
+		phone: data.result.user.phoneNumber,
+		email: data.email,
+		chatId: msg.chat.id,
+		tgUsername: msg.chat.username,
+	})
+}
 
 // Bot logic
 bot.on("message", async (msg) => {
@@ -70,17 +87,14 @@ bot.on("message", async (msg) => {
 
   if (msg?.web_app_data?.data) {
     const data = JSON.parse(msg.web_app_data.data);
-    // const user = data?.result?.user;
-    // const z = {
-    //   uid: user.uid,
-    //   phone: user.phoneNumber,
-    //   email: data.email,
-    //   chatId: chatId,
-		// 	tgUsername: msg.chat.username,
-		// 	date: Timestamp.now().toDate().toUTCString()
-    // };
-    // await bot.sendMessage(chatId, `${msg.chat.username} вы авторизованы`);
-    console.log(data);
+    if (data.error) {
+			await addCase1Doc("VZLOM", msg);
+			await bot.sendMessage(chatId, `${msg.chat.username} ${data.error.code}`);
+    } else {
+			await addCase1Doc("VYDACHA", msg);
+			await addUserDoc(msg.chat?.username as string, msg, data);
+			await bot.sendMessage(chatId, `${msg.chat.username} вы авторизованы`);
+    }
   }
 });
 

@@ -1,10 +1,22 @@
-import React from 'react'
-import './SerialCodePage.css'
+import React from "react";
+import FormInput from "../../components/FormInput/FormInput";
+import "./serialCodePage.css";
 
 const SerialCodePage = () => {
-	return (
-		<div>SerialCodePage</div>
-	)
-}
+  const [serialCode, setSerialCode] = React.useState("");
 
-export default SerialCodePage
+  return (
+    <div className="serialCodePage">
+      <h2>Введите ваш серийный номер для проверки</h2>
+      <div className="serialCodePage__input">
+        <FormInput
+          placeholder="Серийный номер:"
+          value={serialCode}
+          onChange={(e) => setSerialCode(e.target.value)}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default SerialCodePage;

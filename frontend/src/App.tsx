@@ -7,6 +7,7 @@ import AuthPage from "./pages/AuthPage/AuthPage";
 import { auth } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { useTelegram } from "./hooks/useTelegram";
+import SerialCodePage from "./pages/SerialCodePage/SerialCodePage";
 
 function App() {
   const [isAuthorized, setIsAuthorized] = React.useState(false);
@@ -45,6 +46,7 @@ function App() {
       <Header tgUser={user} isAuthorized={isAuthorized} setIsAuthorized={setIsAuthorized} />
       <Routes>
         <Route path="/" element={<MainPage />} />
+				<Route path="/serial" element={<SerialCodePage />} />
         <Route
           path="/auth"
           element={

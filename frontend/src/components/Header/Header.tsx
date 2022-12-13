@@ -21,6 +21,9 @@ const Header: React.FC<HeaderProps> = ({isAuthorized, setIsAuthorized, tgUser}) 
       <Link className="header__link" to={"/"}>
         Главная
       </Link>
+      <Link className="header__link" to={"/serial"}>
+        Проверка серийного номера
+      </Link>
       {/* {isAuthorized && tgUser && ( */}
       {isAuthorized && (
         <div className="header__user">

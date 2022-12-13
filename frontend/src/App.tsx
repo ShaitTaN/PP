@@ -12,6 +12,7 @@ function App() {
   const [isAuthorized, setIsAuthorized] = React.useState(false);
 	const { user } = useTelegram();
 
+	// При монтировании компонента App, проверяем авторизован ли пользователь
   React.useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {

@@ -34,65 +34,21 @@ const AuthPage: React.FC<AuthPageProps> = ({
   const navigate = useNavigate();
   const { tg } = useTelegram();
 
+	// Коллбэк для отправки данных боту
   const onSendData = React.useCallback(() => {
-    const confirmationResult = window.confirmationResult;
+		const confirmationResult = window.confirmationResult;
     confirmationResult
-      .confirm(code)
-      .then((result: any) => {
-        setIsAuthorized(true);
-        tg.sendData(JSON.stringify({ result, email }));
-      })
-      .catch((error: Error) => {
-        tg.sendData(JSON.stringify({ error, msg: "Invalid code." }));
-      });
+		.confirm(code)
+		.then((result: any) => {
+			setIsAuthorized(true);
+			tg.sendData(JSON.stringify({ result, email }));
+		})
+		.catch((error: Error) => {
+			tg.sendData(JSON.stringify({ error, msg: "Invalid code." }));
+		});
   }, [tg, code, setIsAuthorized, email]);
-
-  const generateRecaptcha = () => {
-    window.recaptchaVerifier = new RecaptchaVerifier(
-      "recaptcha-container",
-      {
-        size: "invisible",
-        callback: (response: any) => {},
-      },
-      auth
-    );
-  };
-
-  React.useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        navigate("/");
-      } else {
-        generateRecaptcha();
-      }
-    });
-  }, [setIsAuthorized, navigate]);
-
-  React.useEffect(() => {
-    tg.onEvent("mainButtonClicked", onSendData);
-
-    return () => {
-      tg.offEvent("mainButtonClicked", onSendData);
-    };
-  }, [tg, onSendData]);
-
-  React.useEffect(() => {
-    tg?.MainButton.setParams({ text: "Отправить" });
-    tg?.MainButton.show();
-
-    return () => {
-      tg?.MainButton.hide();
-    };
-  }, [tg.MainButton]);
-
-  React.useEffect(() => {
-    if (!email || !phone || !code) {
-      tg?.MainButton.disable();
-    } else {
-      tg?.MainButton.enable();
-    }
-  }, [tg.MainButton, email, phone, code]);
-
+	
+	// Отправка кода на телефон
   const onSendCode = () => {
     const appVerifier = window.recaptchaVerifier;
 
@@ -104,6 +60,55 @@ const AuthPage: React.FC<AuthPageProps> = ({
         console.log(error);
       });
   };
+
+		// Генерация recaptcha для отправки смс
+		const generateRecaptcha = () => {
+			window.recaptchaVerifier = new RecaptchaVerifier(
+				"recaptcha-container",
+				{
+					size: "invisible",
+					callback: (response: any) => {},
+				},
+				auth
+			);
+		};
+
+	// Добавление слушателя на событие нажатия на main телеграм кнопку
+	React.useEffect(() => {
+		tg.onEvent("mainButtonClicked", onSendData);
+		return () => {
+			tg.offEvent("mainButtonClicked", onSendData);
+		};
+	}, [tg, onSendData]);
+
+	// Изменение текста main телеграм кнопки и ее отображение
+	React.useEffect(() => {
+		tg?.MainButton.setParams({ text: "Отправить" });
+		tg?.MainButton.show();
+		return () => {
+			tg?.MainButton.hide();
+		};
+	}, [tg.MainButton]);
+
+	// Отключение main телеграм кнопки при незаполненных полях
+	React.useEffect(() => {
+		if (!email || !phone || !code) {
+			tg?.MainButton.disable();
+		} else {
+			tg?.MainButton.enable();
+		}
+	}, [tg.MainButton, email, phone, code]);
+
+	// При монтировании компонента проверяем авторизован ли пользователь
+	React.useEffect(() => {
+		onAuthStateChanged(auth, (user) => {
+			if (user) {
+				navigate("/");
+			} else {
+				generateRecaptcha();
+			}
+		});
+	}, [setIsAuthorized, navigate]);
 
   return (
     <div className="authPage">

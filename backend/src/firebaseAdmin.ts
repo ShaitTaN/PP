@@ -40,7 +40,7 @@ const addCase1Doc = async (flag: case1Flag, msg: TelegramBot.Message) => {
     group: userDoc?.group || "user",
   };
 
-  case1DocRef.add({ newCase1Doc });
+  case1DocRef.add(newCase1Doc);
 };
 
 const addUserDoc = async (
@@ -60,12 +60,12 @@ const addUserDoc = async (
     group: "user",
   };
 
-  usersDocRef.doc(tgUserId).set({ newUserDoc });
+  usersDocRef.doc(tgUserId).set(newUserDoc);
 };
 
 export const FbAdmin = {
-	getUserDoc,
-	getUsersDocsWhere,
-	addCase1Doc,
-	addUserDoc,
-}
+  getUserDoc,
+  getUsersDocsWhere,
+  addCase1Doc,
+  addUserDoc,
+};

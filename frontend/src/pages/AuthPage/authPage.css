@@ -16,3 +16,13 @@
 	width: 300px;
 	margin-bottom: 30px;
 }
+.authPage__checkCode p{
+	font-size: 14px;
+	color: var(--tg-theme-hint-color);
+	text-align: center;
+	opacity: 0;
+	transition: opacity 0.3s;
+}
+.authPage__checkCode p.active{
+	opacity: 1;
+}

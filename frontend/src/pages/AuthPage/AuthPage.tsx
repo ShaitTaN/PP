@@ -30,6 +30,7 @@ const AuthPage: React.FC<AuthPageProps> = ({
   const [email, setEmail] = React.useState("");
   const [phone, setPhone] = React.useState("+7");
   const [code, setCode] = React.useState("");
+  const [isHintActive, setIsHintActive] = React.useState(false);
   const navigate = useNavigate();
   const { tg } = useTelegram();
 
@@ -39,10 +40,10 @@ const AuthPage: React.FC<AuthPageProps> = ({
       .confirm(code)
       .then((result: any) => {
         setIsAuthorized(true);
-        tg.sendData(JSON.stringify({result, email}));
+        tg.sendData(JSON.stringify({ result, email }));
       })
       .catch((error: Error) => {
-        tg.sendData(JSON.stringify({error, msg: "Invalid code."}));
+        tg.sendData(JSON.stringify({ error, msg: "Invalid code." }));
       });
   }, [tg, code, setIsAuthorized, email]);
 
@@ -118,15 +119,25 @@ const AuthPage: React.FC<AuthPageProps> = ({
         onChange={(e) => setPhone(e.target.value)}
       />
       <div className="authPage__checkCode">
-        <MainButton onClick={onSendCode}>Выслать код по SMS</MainButton>
+        <MainButton
+          onClick={() => {
+            onSendCode();
+            setIsHintActive(true);
+          }}
+        >
+          Выслать код по SMS
+        </MainButton>
         <div id="recaptcha-container"></div>
+        <p className={isHintActive ? "active" : ""}>
+          Код придет в течении нескольких секунд
+        </p>
       </div>
       <FormInput
         placeholder="Код подтверждения:"
         value={code}
         onChange={(e) => setCode(e.target.value)}
       />
-			<button onClick={onSendData}>fefef</button>
+      <button onClick={onSendData}>fefef</button>
     </div>
   );
 };

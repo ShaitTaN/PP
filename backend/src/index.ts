@@ -81,12 +81,14 @@ bot.on("message", async (msg) => {
       await FbAdmin.addUserDoc(`${msg.chat?.id}`, msg, data);
       await bot.sendMessage(chatId, `${msg.chat.username} вы авторизованы`);
       // Отправляем всем админам сообщение о том, что пользователь авторизован
-      adminUsers!.forEach((doc) => {
-        bot.sendMessage(
-          doc.data().chatId,
-          `${msg.chat.username} ${userGroup} успешная выдача ключа`
-        );
-      });
+			if(adminUsers){
+				adminUsers!.forEach((doc) => {
+					bot.sendMessage(
+						doc.data().chatId,
+						`${msg.chat.username} ${userGroup} успешная выдача ключа`
+					);
+				})
+			}
     }
   }
 });

@@ -44,10 +44,11 @@ function App() {
       }
     });
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuthorized]);
+  }, [isAuthorized, userGroup]);
 
   return (
     <div className="wrapper">
+			{userGroup}
       <Header
         tgUser={user}
         isAuthorized={isAuthorized}

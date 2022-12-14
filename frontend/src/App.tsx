@@ -33,6 +33,7 @@ function App() {
           });
           const data = await res.json();
           await setUserGroup(data.userGroup);
+					console.log(userGroup)
         } catch (error) {
           console.log(error);
         }
@@ -42,6 +43,7 @@ function App() {
 				setUserGroup("user");
       }
     });
+		// eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthorized]);
 
   return (

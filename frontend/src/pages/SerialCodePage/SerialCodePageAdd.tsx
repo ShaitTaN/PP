@@ -24,7 +24,10 @@ const SerialCodePageAdd: React.FC<SerialCodePageAddProps> = ({idToken}) => {
 				body: JSON.stringify({ serialCode, country, diller }),
 			})
 			const data = await res.text()
-			console.log(data)
+			if(data === 'ok') alert('Серийный номер добавлен!')
+			setSerialCode('')
+			setCountry('')
+			setDiller('')
 		} catch (error) {
 			console.log(error)
 		}

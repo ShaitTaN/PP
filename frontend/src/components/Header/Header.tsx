@@ -36,8 +36,8 @@ const Header: React.FC<HeaderProps> = ({isAuthorized,setIsAuthorized,tgUser,}) =
         <Link className="header__link" to={"/serial"}>
           Серийный номер
         </Link>
-        {/* {isAuthorized && tgUser && ( */}
-        {isAuthorized && (
+        {isAuthorized && tgUser && (
+        // {isAuthorized && (
           <div className="header__user">
             <span>{tgUser?.username || "USERNAME"}</span>
             <button onClick={onLogout}>Выход</button>

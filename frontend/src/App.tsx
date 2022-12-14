@@ -13,34 +13,29 @@ import SerialCodePageAdd from "./pages/SerialCodePage/SerialCodePageAdd";
 function App() {
   const [isAuthorized, setIsAuthorized] = React.useState(false);
   const [userGroup, setUserGroup] = React.useState("user");
-	const [idToken, setIdToken] = React.useState("");
+  const [idToken, setIdToken] = React.useState("");
   const { user } = useTelegram();
 
   // При монтировании компонента App, проверяем авторизован ли пользователь
   React.useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
-        user
-          .getIdToken(true)
-          .then((idToken) => {
-						setIdToken(idToken);
-            fetch("http://localhost:3030/auth", {
-              method: "POST",
-              body: JSON.stringify({ uid: user.uid }),
-              headers: {
-                AuthToken: idToken,
-                "Content-Type": "application/json",
-              },
-            })
-              .then((res) => res.json())
-              .then((data) => setUserGroup(data.userGroup))
-              .catch((error) => {
-                console.log(error);
-              });
-          })
-          .catch((error) => {
-            console.log(error);
+        try {
+          const idToken = await user.getIdToken(true);
+          setIdToken(idToken);
+          const res = await fetch("http://localhost:3030/auth", {
+            method: "POST",
+            body: JSON.stringify({ uid: user.uid }),
+            headers: {
+              AuthToken: idToken,
+              "Content-Type": "application/json",
+            },
           });
+          const data = await res.json();
+          setUserGroup(data.userGroup);
+        } catch (error) {
+          console.log(error);
+        }
         setIsAuthorized(true);
       } else {
         setIsAuthorized(false);
@@ -61,7 +56,10 @@ function App() {
           path="/serial"
           element={<SerialCodePage userGroup={userGroup} />}
         />
-        <Route path="/serial-add" element={<SerialCodePageAdd idToken={idToken} />} />
+        <Route
+          path="/serial-add"
+          element={<SerialCodePageAdd idToken={idToken} />}
+        />
         <Route
           path="/auth"
           element={

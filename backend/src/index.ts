@@ -36,6 +36,10 @@ function checkAuth(req: Request, res: Response, next: NextFunction) {
 app.use(["/auth", '/serial-add'], checkAuth);
 
 // Bot logic
+bot.setMyCommands([
+	{ command: "/start", description: "Начать работу с ботом" },
+	{ command: "/auth", description: "Авторизоваться" },
+])
 bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
   const text = msg.text;

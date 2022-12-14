@@ -70,7 +70,7 @@ const getSerialCodeDoc = async (code: string) => {
 	return serialCodeDoc.data();
 };
 
-const addSerialCode = async (code: string, country:string, diller: string) => {
+const addSerialCodeDoc = async (code: string, country:string, diller: string) => {
 	const newSerialCodeDoc: FbSerialCode = {
 		code,
 		country,
@@ -87,5 +87,5 @@ export const FbAdmin = {
   addCase1Doc,
   addUserDoc,
 	getSerialCodeDoc,
-  addSerialCode,
+  addSerialCodeDoc,
 };

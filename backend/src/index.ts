@@ -83,10 +83,30 @@ bot.on("message", async (msg) => {
     // Получение пользователя, который пытается авторизоваться
     const currentUser = await FbAdmin.getUserDoc(`${msg.chat?.id}`);
     const userGroup = currentUser ? currentUser.group : "user";
+		// Если пришел серийный номер
 		if(data.serialCode){
-			await bot.sendMessage(chatId, JSON.stringify(data));
+			await FbAdmin.addSerialCodeDoc(data.serialCode, data.country, data.diller);
+			await bot.sendMessage(chatId, "Серийный номер добавлен!");
 		}
-    else if (data.error) {
+		// Если пришел ответ от веб-приложения с данными пользователя
+		else if (data.result){
+			// Если все ок, то добавляем в коллекцию case1 документ с флагом VYDACHA
+			await FbAdmin.addCase1Doc("VYDACHA", msg);
+			// Добавляем в коллекцию users документ с данными пользователя
+			await FbAdmin.addUserDoc(`${msg.chat?.id}`, msg, data);
+			await bot.sendMessage(chatId, `${msg.chat.username} вы авторизованы`);
+			// Отправляем всем админам сообщение о том, что пользователь авторизован
+			if (adminUsers) {
+				adminUsers!.forEach((doc) => {
+					bot.sendMessage(
+						doc.data().chatId,
+						`${msg.chat.username} ${userGroup} успешная выдача ключа`
+					);
+				});
+			}
+		}
+		// Если пришел ответ от веб-приложения с ошибкой
+    else if (data.msg == "invalid_code") {
       // Если ошибка, то добавляем в коллекцию case1 документ с флагом VZLOM
       await FbAdmin.addCase1Doc("VZLOM", msg);
       await bot.sendMessage(chatId, `${msg.chat.username} ${data.error.code}`);
@@ -100,22 +120,6 @@ bot.on("message", async (msg) => {
         });
       }
     } 
-		else if (data.result){
-      // Если все ок, то добавляем в коллекцию case1 документ с флагом VYDACHA
-      await FbAdmin.addCase1Doc("VYDACHA", msg);
-      // Добавляем в коллекцию users документ с данными пользователя
-      await FbAdmin.addUserDoc(`${msg.chat?.id}`, msg, data);
-      await bot.sendMessage(chatId, `${msg.chat.username} вы авторизованы`);
-      // Отправляем всем админам сообщение о том, что пользователь авторизован
-      if (adminUsers) {
-        adminUsers!.forEach((doc) => {
-          bot.sendMessage(
-            doc.data().chatId,
-            `${msg.chat.username} ${userGroup} успешная выдача ключа`
-          );
-        });
-      }
-    }
   }
 });
 
@@ -160,22 +164,22 @@ app.post("/serial", async (req, res) => {
   res.end();
 });
 
-app.post("/serial-add", async (req, res) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, application/json"
-  );
+// app.post("/serial-add", async (req, res) => {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content-Type, Accept, application/json"
+//   );
 
-  const serialCode = req.body.serialCode;
-  const country = req.body.country;
-  const diller = req.body.diller;
+//   const serialCode = req.body.serialCode;
+//   const country = req.body.country;
+//   const diller = req.body.diller;
 
-  await FbAdmin.addSerialCode(serialCode, country, diller);
+//   await FbAdmin.addSerialCode(serialCode, country, diller);
 
-  res.end("ok");
-});
+//   res.end("ok");
+// });
 
 app.listen(PORT, () => {
   console.log(`⚡️[server]: Server is running at https://localhost:${PORT}`);

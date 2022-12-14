@@ -9,7 +9,6 @@ import {
   signInWithPhoneNumber,
   onAuthStateChanged,
 } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
 
 declare global {
   interface Window {
@@ -31,7 +30,6 @@ const AuthPage: React.FC<AuthPageProps> = ({
   const [phone, setPhone] = React.useState("+7");
   const [code, setCode] = React.useState("");
   const [isHintActive, setIsHintActive] = React.useState(false);
-  const navigate = useNavigate();
   const { tg } = useTelegram();
 
 	// Коллбэк для отправки данных боту
@@ -103,12 +101,12 @@ const AuthPage: React.FC<AuthPageProps> = ({
 	React.useEffect(() => {
 		onAuthStateChanged(auth, (user) => {
 			if (user) {
-				navigate("/");
+				tg.close()
 			} else {
 				generateRecaptcha();
 			}
 		});
-	}, [setIsAuthorized, navigate]);
+	}, [tg]);
 
   return (
     <div className="authPage">

@@ -15,14 +15,6 @@ const SerialCodePageAdd: React.FC<SerialCodePageAddProps> = ({idToken}) => {
 
 	const onAddSerialCode = React.useCallback(async () => {
 		try {
-			// const res = await fetch('http://localhost:3030/serial-add', {
-			// 	method: 'POST',
-			// 	headers: {
-			// 		AuthToken: idToken,
-			// 		"Content-Type": "application/json",
-			// 	},
-			// 	body: JSON.stringify({ serialCode, country, diller }),
-			// })
 			tg.sendData(JSON.stringify({ serialCode, country, diller }));
 			setSerialCode('')
 			setCountry('')

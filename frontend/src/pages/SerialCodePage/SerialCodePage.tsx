@@ -2,15 +2,15 @@ import React from "react";
 import FormInput from "../../components/FormInput/FormInput";
 import MainButton from "../../components/MainButton/MainButton";
 import { useTelegram } from "../../hooks/useTelegram";
-// import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./serialCodePage.css";
 
-// interface SerialCode {
-//   code: string;
-//   country: string;
-//   diller: string;
-//   date: string;
-// }
+interface SerialCode {
+  code: string;
+  country: string;
+  diller: string;
+  date: string;
+}
 
 declare global {
   interface Window {
@@ -20,27 +20,28 @@ declare global {
 
 const SerialCodePage = () => {
   const [serialCode, setSerialCode] = React.useState("");
-  // const [data, setData] = React.useState<SerialCode | null>(null);
-  // const [isActive, setIsActive] = React.useState(false);
-  const { tg, user: tgUser} = useTelegram();
+  const [data, setData] = React.useState<SerialCode | null>(null);
+  const [isActive, setIsActive] = React.useState(false);
+  const { tg} = useTelegram();
 
   const onSendSerialCode = React.useCallback(async () => {
     if (!serialCode) return;
     try {
-      // if (!tgUser) {
-        // const res = await fetch("http://localhost:3030/serial", {
-        //   method: "POST",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        //   body: JSON.stringify({ serialCode, queryId }),
-        // });
-        // const data = await res.json();
+      if (tg.platform === "unknown") {
+        const res = await fetch("http://localhost:3030/serial", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ serialCode }),
+        });
+        const data = await res.json();
 
-        // setIsActive(true);
-        // setData(data);
-				tg.sendData(JSON.stringify({ serialCode, msg: "get_serial_code" }));
-      // }
+        setIsActive(true);
+        setData(data);
+      } else {
+        tg.sendData(JSON.stringify({ serialCode, msg: "get_serial_code" }));
+      }
     } catch (error) {
       console.log(error);
     }
@@ -74,7 +75,7 @@ const SerialCodePage = () => {
 
   return (
     <div className="serialCodePage">
-			{JSON.stringify(window.Telegram.WebApp.platform)}
+      {JSON.stringify(window.Telegram.WebApp.platform)}
       <h2>Введите ваш серийный номер для проверки</h2>
       <div className="serialCodePage__input">
         <FormInput
@@ -82,11 +83,11 @@ const SerialCodePage = () => {
           value={serialCode}
           onChange={(e) => setSerialCode(e.target.value.trim())}
         />
-        {!tgUser && (
+        {tg.platform === "unknown" && (
           <MainButton onClick={onSendSerialCode}>Отправить</MainButton>
         )}
       </div>
-      {/* {!data && isActive && <p>Такого серийного номера не существует!</p>}
+      {!data && isActive && <p>Такого серийного номера не существует!</p>}
       {data && (
         <div className="serialCodePage__data">
           <p>Страна: {data.country}</p>
@@ -96,7 +97,7 @@ const SerialCodePage = () => {
             Ссылка на софт: <Link to="/serial">ссылка</Link>
           </p>
         </div>
-      )} */}
+      )}
     </div>
   );
 };

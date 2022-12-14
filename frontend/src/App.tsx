@@ -50,7 +50,6 @@ function App() {
     <div className="wrapper">
 			{JSON.stringify(tgUser)}
       <Header
-        tgUser={tgUser}
         isAuthorized={isAuthorized}
         setIsAuthorized={setIsAuthorized}
         setIdToken={setIdToken}

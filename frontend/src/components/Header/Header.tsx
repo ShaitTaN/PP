@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useTelegram } from "../../hooks/useTelegram";
 // import { auth } from "../../firebase";
 import "./header.css";
 
@@ -7,11 +8,11 @@ interface HeaderProps {
   isAuthorized: boolean;
   setIsAuthorized: (isAuthorized: boolean) => void;
 	setIdToken: (idToken: string) => void;
-  tgUser: any;
 }
 
-const Header: React.FC<HeaderProps> = ({isAuthorized,setIsAuthorized,tgUser, setIdToken}) => {
+const Header: React.FC<HeaderProps> = ({isAuthorized,setIsAuthorized, setIdToken}) => {
 	const [isMenuActive, setIsMenuActive] = React.useState(false);
+	const {tg, user: tgUser} = useTelegram();
 
   // const onLogout = () => {
   //   auth.signOut().then(() => {
@@ -35,7 +36,7 @@ const Header: React.FC<HeaderProps> = ({isAuthorized,setIsAuthorized,tgUser, set
         <Link className="header__link" to={"/"}>
           Главная
         </Link>
-        {!tgUser?.username && <Link className="header__link" to={"/serial"}>
+        { tg.platform === "unknown" && <Link className="header__link" to={"/serial"}>
           Серийный номер
         </Link>}
         { tgUser && (

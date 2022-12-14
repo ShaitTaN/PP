@@ -6,15 +6,17 @@ import "./header.css";
 interface HeaderProps {
   isAuthorized: boolean;
   setIsAuthorized: (isAuthorized: boolean) => void;
+	setIdToken: (idToken: string) => void;
   tgUser: any;
 }
 
-const Header: React.FC<HeaderProps> = ({isAuthorized,setIsAuthorized,tgUser,}) => {
+const Header: React.FC<HeaderProps> = ({isAuthorized,setIsAuthorized,tgUser, setIdToken}) => {
 	const [isMenuActive, setIsMenuActive] = React.useState(false);
 
   const onLogout = () => {
     auth.signOut().then(() => {
       setIsAuthorized(false);
+			setIdToken('');
     });
   };
 
@@ -36,8 +38,8 @@ const Header: React.FC<HeaderProps> = ({isAuthorized,setIsAuthorized,tgUser,}) =
         <Link className="header__link" to={"/serial"}>
           Серийный номер
         </Link>
-        {isAuthorized && tgUser && (
-        // {isAuthorized && (
+        {/* {isAuthorized && tgUser && ( */}
+        {isAuthorized && (
           <div className="header__user">
             <span>{tgUser?.username || "USERNAME"}</span>
             <button onClick={onLogout}>Выход</button>

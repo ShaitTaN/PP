@@ -2,7 +2,6 @@ import TelegramBot from "node-telegram-bot-api";
 import express, { Express, Request, Response, NextFunction } from "express";
 import admin from "firebase-admin";
 import { FbAdmin } from "./firebaseAdmin";
-const serviceAccount = require("../fbServiceAccountKey.json");
 const cors = require("cors");
 
 // Telegram bot
@@ -33,13 +32,13 @@ function checkAuth(req: Request, res: Response, next: NextFunction) {
     return;
   }
 }
-app.use(["/auth", '/serial-add'], checkAuth);
+app.use(["/auth", "/serial-add"], checkAuth);
 
 // Bot logic
 bot.setMyCommands([
-	{ command: "/start", description: "Начать работу с ботом" },
-	{ command: "/auth", description: "Авторизоваться" },
-])
+  { command: "/start", description: "Начать работу с ботом" },
+  { command: "/auth", description: "Авторизоваться" },
+]);
 bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
   const text = msg.text;
@@ -67,12 +66,14 @@ bot.on("message", async (msg) => {
       await FbAdmin.addCase1Doc("VZLOM", msg);
       await bot.sendMessage(chatId, `${msg.chat.username} ${data.error.code}`);
       // Отправляем всем админам сообщение о том, что пользователь не авторизован
-      adminUsers!.forEach((doc) => {
-        bot.sendMessage(
-          doc.data().chatId,
-          `${msg.chat.username} ${userGroup} попытка взлома`
-        );
-      });
+      if (adminUsers) {
+        adminUsers.forEach((doc) => {
+          bot.sendMessage(
+            doc.data().chatId,
+            `${msg.chat.username} ${userGroup} попытка взлома`
+          );
+        });
+      }
     } else {
       // Если все ок, то добавляем в коллекцию case1 документ с флагом VYDACHA
       await FbAdmin.addCase1Doc("VYDACHA", msg);
@@ -94,23 +95,23 @@ bot.on("message", async (msg) => {
 
 // Express routes
 app.post("/auth", async (req, res) => {
-	res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept, application/json"
   );
-	const uid = req.body.uid;
-	let userGroup = 'user'
-	if(uid){
-		const users = await FbAdmin.getUsersDocsWhere('uid', uid);
-		users?.forEach((doc) => {
-			userGroup = doc.data().group;
-		});
-	}
+  const uid = req.body.uid;
+  let userGroup = "user";
+  if (uid) {
+    const users = await FbAdmin.getUsersDocsWhere("uid", uid);
+    users?.forEach((doc) => {
+      userGroup = doc.data().group;
+    });
+  }
   res.json({
     message: "Auth ok!",
-		userGroup: userGroup,
+    userGroup: userGroup,
   });
   res.end();
 });
@@ -124,7 +125,7 @@ app.post("/serial", async (req, res) => {
   );
 
   const serialCodeReq = req.body.serialCode;
-	const serialCode =	await FbAdmin.getSerialCodeDoc(serialCodeReq);
+  const serialCode = await FbAdmin.getSerialCodeDoc(serialCodeReq);
 
   res.json(serialCode);
   res.end();
@@ -138,12 +139,12 @@ app.post("/serial-add", async (req, res) => {
     "Origin, X-Requested-With, Content-Type, Accept, application/json"
   );
 
-  const serialCode= req.body.serialCode;
-	const country = req.body.country;
-	const diller = req.body.diller;
+  const serialCode = req.body.serialCode;
+  const country = req.body.country;
+  const diller = req.body.diller;
 
-	await FbAdmin.addSerialCode(serialCode, country, diller)
-	
+  await FbAdmin.addSerialCode(serialCode, country, diller);
+
   res.end("ok");
 });
 

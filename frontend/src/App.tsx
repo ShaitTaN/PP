@@ -32,16 +32,17 @@ function App() {
             },
           });
           const data = await res.json();
-          setUserGroup(data.userGroup);
+          await setUserGroup(data.userGroup);
         } catch (error) {
           console.log(error);
         }
         setIsAuthorized(true);
       } else {
         setIsAuthorized(false);
+				setUserGroup("user");
       }
     });
-  }, [setIsAuthorized]);
+  }, [isAuthorized]);
 
   return (
     <div className="wrapper">
@@ -49,6 +50,7 @@ function App() {
         tgUser={user}
         isAuthorized={isAuthorized}
         setIsAuthorized={setIsAuthorized}
+				setIdToken={setIdToken}
       />
       <Routes>
         <Route path="/" element={<MainPage />} />

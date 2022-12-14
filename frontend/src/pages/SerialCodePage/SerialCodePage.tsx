@@ -39,12 +39,12 @@ const SerialCodePage = () => {
 
         setIsActive(true);
         setData(data);
+				tg.sendData(JSON.stringify({ serialCode, msg: "get_serial_code" }));
       // }
-      // tg.sendData(JSON.stringify({ serialCode, msg: "get_serial_code" }));
     } catch (error) {
       console.log(error);
     }
-  }, [serialCode, queryId]);
+  }, [serialCode, queryId, tg]);
 
   // Подписка на событие нажатия на main телеграм кнопку
   React.useEffect(() => {

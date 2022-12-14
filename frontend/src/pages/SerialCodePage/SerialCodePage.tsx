@@ -12,11 +12,8 @@ interface SerialCode {
   date: string;
 }
 
-interface SerialCodePageProps {
-  userGroup: string;
-}
 
-const SerialCodePage: React.FC<SerialCodePageProps> = ({ userGroup }) => {
+const SerialCodePage = () => {
   const [serialCode, setSerialCode] = React.useState("");
   const [data, setData] = React.useState<SerialCode | null>(null);
   const [isActive, setIsActive] = React.useState(false);

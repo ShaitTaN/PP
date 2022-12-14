@@ -33,8 +33,8 @@ function App() {
             },
           });
           const data = await res.json();
-          // await setData(data);
           await setUserGroup(data.userGroup);
+					console.log(userGroup);
         } catch (error) {
           console.log(error);
         }
@@ -44,7 +44,7 @@ function App() {
         setUserGroup("user");
       }
     });
-  }, [isAuthorized, tgUser, tg]);
+  }, [isAuthorized, tgUser, tg, userGroup]);
 
   return (
     <div className="wrapper">
@@ -59,7 +59,7 @@ function App() {
         <Route path="/" element={<MainPage />} />
         <Route
           path="/serial"
-          element={<SerialCodePage userGroup={userGroup} />}
+          element={<SerialCodePage/>}
         />
         <Route
           path="/serial-add"

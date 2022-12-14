@@ -75,7 +75,6 @@ const SerialCodePage = () => {
 
   return (
     <div className="serialCodePage">
-      {JSON.stringify(window.Telegram.WebApp.platform)}
       <h2>Введите ваш серийный номер для проверки</h2>
       <div className="serialCodePage__input">
         <FormInput

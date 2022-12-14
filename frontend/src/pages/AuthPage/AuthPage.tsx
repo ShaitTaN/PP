@@ -101,7 +101,7 @@ const AuthPage: React.FC<AuthPageProps> = ({
 	React.useEffect(() => {
 		onAuthStateChanged(auth, (user) => {
 			if (user) {
-				tg.sendData(JSON.stringify({ msg: "authorized" }))
+				// tg.sendData(JSON.stringify({ msg: "authorized" }))
 			} else {
 				generateRecaptcha();
 			}

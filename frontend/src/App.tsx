@@ -54,7 +54,7 @@ function App() {
         setUserGroup("user");
       }
     });
-  }, [isAuthorized, userGroup]);
+  }, [isAuthorized, tgUser]);
 
   return (
     <div className="wrapper">

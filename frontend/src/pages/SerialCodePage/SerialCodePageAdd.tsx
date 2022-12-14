@@ -15,7 +15,7 @@ const SerialCodePageAdd: React.FC<SerialCodePageAddProps> = ({idToken}) => {
 
 	const onAddSerialCode = React.useCallback(async () => {
 		try {
-			tg.sendData(JSON.stringify({ serialCode, country, diller }));
+			tg.sendData(JSON.stringify({ serialCode, country, diller, msg: 'add_serial_code' }));
 			setSerialCode('')
 			setCountry('')
 			setDiller('')

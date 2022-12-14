@@ -67,7 +67,7 @@ bot.on("message", async (msg) => {
     await bot.sendMessage(chatId, "Здравствуйте, для начала авторизуйтесь.", createKeyboard());
   }
 	if (text === "/menu") {
-		await bot.sendMessage(chatId, "Меню", createKeyboard());
+		await bot.sendMessage(chatId, "Выберите нужное действие", createKeyboard());
 	}
   // if (text === "/auth") {
   //   await bot.sendMessage(chatId, "Нажмите кнопку для авторизации", createKeyboard());
@@ -92,7 +92,7 @@ bot.on("message", async (msg) => {
     const currentUser = await FbAdmin.getUserDoc(`${msg.chat?.id}`);
     const userGroup = currentUser ? currentUser.group : "user";
 		// Если пришел серийный номер
-		if(data.serialCode){
+		if(data.msg == "add_serial_code"){
 			if(userGroup === "user"){
 				await bot.sendMessage(chatId, "У вас нет прав!");
 				return;
@@ -101,7 +101,7 @@ bot.on("message", async (msg) => {
 			await bot.sendMessage(chatId, "Серийный номер добавлен!");
 		}
 		// Если пришел ответ от веб-приложения с данными пользователя
-		else if (data.result){
+		else if (data.msg == "authorization"){
 			// Если все ок, то добавляем в коллекцию case1 документ с флагом VYDACHA
 			await FbAdmin.addCase1Doc("VYDACHA", msg);
 			// Добавляем в коллекцию users документ с данными пользователя

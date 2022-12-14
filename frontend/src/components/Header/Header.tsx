@@ -26,7 +26,6 @@ const Header: React.FC<HeaderProps> = ({isAuthorized,setIsAuthorized,tgUser, set
 
   return (
     <>
-		{tgUser?.username}
       <div className={`burger ${isMenuActive ? 'active' : ''}`} onClick={onToggleMenu}>
         <span></span>
         <span></span>

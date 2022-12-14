@@ -117,8 +117,16 @@ bot.on("message", async (msg) => {
 				});
 			}
 		}
+		else if (data.msg == "get_serial_code"){
+			const serialCode = await FbAdmin.getSerialCodeDoc(data.serialCode)
+			if(serialCode){
+				await bot.sendMessage(chatId, `Серийный код: ${serialCode.code}\nСтрана: ${serialCode.country}\nДиллер: ${serialCode.diller} \nДата выдачи: ${serialCode.date}`);
+				return
+			}
+			await bot.sendMessage(chatId, "Серийный код не найден");
+		}
 		else if (data.msg == "authorized"){
-			await bot.sendMessage(chatId, `${msg.chat.username} вы уже авторизованы`);
+			await bot.sendMessage(chatId, `${msg.chat.username} вы авторизованы`);
 		}
 		// Если пришел ответ от веб-приложения с ошибкой
     else if (data.msg == "invalid_code") {
@@ -173,18 +181,18 @@ app.post("/serial", async (req, res) => {
   );
 	console.log(req.body);
   const serialCodeReq = req.body.serialCode;
-	const queryId = req.body.queryId || null;
   const serialCode = await FbAdmin.getSerialCodeDoc(serialCodeReq);
-	if (queryId && serialCode) {
-		bot.answerWebAppQuery(queryId, {
-			type: "article",
-			id: queryId,
-			title: "Серийный код",
-			input_message_content: {
-				message_text: `Серийный код: ${serialCode.code}\nСтрана: ${serialCode.country}\nДиллер: ${serialCode.diller} \nДата выдачи: ${serialCode.date}`,
-			}
-		});
-	}
+	// const queryId = req.body.queryId || null;
+	// if (queryId && serialCode) {
+	// 	bot.answerWebAppQuery(queryId, {
+	// 		type: "article",
+	// 		id: queryId,
+	// 		title: "Серийный код",
+	// 		input_message_content: {
+	// 			message_text: `Серийный код: ${serialCode.code}\nСтрана: ${serialCode.country}\nДиллер: ${serialCode.diller} \nДата выдачи: ${serialCode.date}`,
+	// 		}
+	// 	});
+	// }
   res.json(serialCode);
   res.end();
 });

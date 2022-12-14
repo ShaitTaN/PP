@@ -35,11 +35,11 @@ button{
   max-width: 1200px;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   body {
     font-size: 16px;
   }
-	button{
-		font-size: 16px;
+	.wrapper{
+		margin-top: 50px;
 	}
 }

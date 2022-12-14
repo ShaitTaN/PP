@@ -113,6 +113,9 @@ bot.on("message", async (msg) => {
 				});
 			}
 		}
+		else if (data.msg == "authorized"){
+			await bot.sendMessage(chatId, `${msg.chat.username} вы уже авторизованы`);
+		}
 		// Если пришел ответ от веб-приложения с ошибкой
     else if (data.msg == "invalid_code") {
       // Если ошибка, то добавляем в коллекцию case1 документ с флагом VZLOM

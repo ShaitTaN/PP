@@ -4,17 +4,19 @@ import Header from "./components/Header/Header";
 import { Routes, Route } from "react-router-dom";
 import MainPage from "./pages/MainPage/MainPage";
 import AuthPage from "./pages/AuthPage/AuthPage";
-import { auth } from "./firebase";
+import { auth, db } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { useTelegram } from "./hooks/useTelegram";
 import SerialCodePage from "./pages/SerialCodePage/SerialCodePage";
 import SerialCodePageAdd from "./pages/SerialCodePage/SerialCodePageAdd";
+import { doc, getDoc } from "firebase/firestore";
+
 
 function App() {
   const [isAuthorized, setIsAuthorized] = React.useState(false);
   const [userGroup, setUserGroup] = React.useState("user");
   const [idToken, setIdToken] = React.useState("");
-  const { user } = useTelegram();
+  const { user: tgUser } = useTelegram();
   const [data, setData] = React.useState<any>(null);
 
   // При монтировании компонента App, проверяем авторизован ли пользователь
@@ -32,10 +34,17 @@ function App() {
               "Content-Type": "application/json",
             },
           });
-          const data = await res.json();
-          await setUserGroup(data.userGroup);
-          await setData(data);
-          console.log(userGroup);
+					const data = await res.json();
+					await setData(data);
+					
+					if(tgUser){
+						const docRef = doc(db, "users", `${tgUser.id}`);
+						const docSnap = await getDoc(docRef);
+						docSnap.exists() && setUserGroup(docSnap.data().userGroup);
+					}else{
+						await setUserGroup(data.userGroup);
+						
+					}
         } catch (error) {
           console.log(error);
         }
@@ -50,10 +59,10 @@ function App() {
   return (
     <div className="wrapper">
       {userGroup}
-      {JSON.stringify(user)}
+      {JSON.stringify(tgUser)}
       {JSON.stringify(data)}
       <Header
-        tgUser={user}
+        tgUser={tgUser}
         isAuthorized={isAuthorized}
         setIsAuthorized={setIsAuthorized}
         setIdToken={setIdToken}

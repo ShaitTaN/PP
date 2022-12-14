@@ -164,7 +164,7 @@ app.post("/serial", async (req, res) => {
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept, application/json"
   );
-
+	console.log(req.body);
   const serialCodeReq = req.body.serialCode;
 	const queryId = req.body.queryId || null;
   const serialCode = await FbAdmin.getSerialCodeDoc(serialCodeReq);

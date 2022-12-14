@@ -1,16 +1,16 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import FormInput from "../../components/FormInput/FormInput";
 import MainButton from "../../components/MainButton/MainButton";
 import { useTelegram } from "../../hooks/useTelegram";
+// import { Link } from "react-router-dom";
 import "./serialCodePage.css";
 
-interface SerialCode {
-  code: string;
-  country: string;
-  diller: string;
-  date: string;
-}
+// interface SerialCode {
+//   code: string;
+//   country: string;
+//   diller: string;
+//   date: string;
+// }
 
 interface SerialCodePageProps {
   userGroup: string;
@@ -18,25 +18,24 @@ interface SerialCodePageProps {
 
 const SerialCodePage: React.FC<SerialCodePageProps> = ({ userGroup }) => {
   const [serialCode, setSerialCode] = React.useState("");
-  const [data, setData] = React.useState<SerialCode | null>(null);
-  const [isActive, setIsActive] = React.useState(false);
+  // const [data, setData] = React.useState<SerialCode | null>(null);
+  // const [isActive, setIsActive] = React.useState(false);
 	const {queryId, tg} = useTelegram()
 
   const onSendSerialCode = React.useCallback(async () => {
-    try {
-      const res = await fetch("http://localhost:3030/serial", {
+    // try {
+      fetch("http://localhost:3030/serial", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ serialCode, queryId }),
       });
-      const data = await res.json();
-      setData(data);
-    } catch (error) {
-      console.log(error);
-    }
-    setIsActive(true);
+      // const data = await res.json();
+      // setData(data);
+    // } catch (error) {
+    //   console.log(error);
+    // }
   }, [serialCode, queryId]);
 
 		// Подписка на событие нажатия на main телеграм кнопку
@@ -77,7 +76,7 @@ const SerialCodePage: React.FC<SerialCodePageProps> = ({ userGroup }) => {
         />
         {!queryId && <MainButton onClick={onSendSerialCode}>Отправить</MainButton>}
       </div>
-      {!data && isActive && <p>Такого серийного номера не существует!</p>}
+      {/* {!data && isActive && <p>Такого серийного номера не существует!</p>}
       {data && (
         <div className="serialCodePage__data">
           <p>Страна: {data.country}</p>
@@ -87,7 +86,7 @@ const SerialCodePage: React.FC<SerialCodePageProps> = ({ userGroup }) => {
             Ссылка на софт: <Link to="/serial">ссылка</Link>
           </p>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

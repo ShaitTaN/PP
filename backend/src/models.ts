@@ -16,6 +16,7 @@ export interface FbCase1 {
   username: string;
 	group: userGroup;
 }
+
 export interface WebAppData {
   result: {
     user: {
@@ -40,4 +41,11 @@ export interface WebAppData {
     operationType: string;
   };
   email: string;
+}
+
+export interface FbSerialCode {
+	code: string;
+	country: string;
+	diller: string;
+	date: string;
 }

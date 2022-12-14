@@ -14,3 +14,10 @@
 	width: 100%;
 	margin-bottom: 30px;
 }
+.serialCodePage__data{
+	text-align: left;
+	width: 100%;
+}
+.serialCodePage__data p{
+	margin-bottom: 10px;
+}

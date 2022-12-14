@@ -5,12 +5,13 @@ import { Routes, Route } from "react-router-dom";
 import MainPage from "./pages/MainPage/MainPage";
 import AuthPage from "./pages/AuthPage/AuthPage";
 import { auth } from "./firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, User } from "firebase/auth";
 import { useTelegram } from "./hooks/useTelegram";
 import SerialCodePage from "./pages/SerialCodePage/SerialCodePage";
 
 function App() {
   const [isAuthorized, setIsAuthorized] = React.useState(false);
+	const [authUser, setAuthUser] = React.useState<User | null>(null);
 	const { user } = useTelegram();
 
 	// При монтировании компонента App, проверяем авторизован ли пользователь
@@ -35,8 +36,10 @@ function App() {
             console.log(error);
           });
         setIsAuthorized(true);
+				setAuthUser(user);
       } else {
         setIsAuthorized(false);
+				setAuthUser(null);
       }
     });
   }, [setIsAuthorized]);
@@ -46,7 +49,7 @@ function App() {
       <Header tgUser={user} isAuthorized={isAuthorized} setIsAuthorized={setIsAuthorized} />
       <Routes>
         <Route path="/" element={<MainPage />} />
-				<Route path="/serial" element={<SerialCodePage />} />
+				<Route path="/serial" element={<SerialCodePage authUser={authUser} />} />
         <Route
           path="/auth"
           element={

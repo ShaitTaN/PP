@@ -33,7 +33,7 @@ function checkAuth(req: Request, res: Response, next: NextFunction) {
     return;
   }
 }
-app.use("/", checkAuth);
+app.use("/auth", checkAuth);
 
 // Bot logic
 bot.on("message", async (msg) => {
@@ -50,35 +50,43 @@ bot.on("message", async (msg) => {
     });
   }
 
-	// Если пришел ответ от веб-приложения
+  // Если пришел ответ от веб-приложения
   if (msg?.web_app_data?.data) {
     const data = JSON.parse(msg.web_app_data.data);
-		// Получаем всех админов
-		const adminUsers = await FbAdmin.getUsersDocsWhere("group", "admin");
-		// Получение пользователя, который пытается авторизоваться
-		const currentUser = await FbAdmin.getUserDoc(`${msg.chat?.id}`);
-		const userGroup = currentUser ? currentUser.group : "user"
+    // Получаем всех админов
+    const adminUsers = await FbAdmin.getUsersDocsWhere("group", "admin");
+    // Получение пользователя, который пытается авторизоваться
+    const currentUser = await FbAdmin.getUserDoc(`${msg.chat?.id}`);
+    const userGroup = currentUser ? currentUser.group : "user";
     if (data.error) {
-			// Если ошибка, то добавляем в коллекцию case1 документ с флагом VZLOM
+      // Если ошибка, то добавляем в коллекцию case1 документ с флагом VZLOM
       await FbAdmin.addCase1Doc("VZLOM", msg);
       await bot.sendMessage(chatId, `${msg.chat.username} ${data.error.code}`);
-			// Отправляем всем админам сообщение о том, что пользователь не авторизован
-			adminUsers!.forEach((doc) => {
-				bot.sendMessage(doc.data().chatId, `${msg.chat.username} ${userGroup} попытка взлома`);
-			})
+      // Отправляем всем админам сообщение о том, что пользователь не авторизован
+      adminUsers!.forEach((doc) => {
+        bot.sendMessage(
+          doc.data().chatId,
+          `${msg.chat.username} ${userGroup} попытка взлома`
+        );
+      });
     } else {
-			// Если все ок, то добавляем в коллекцию case1 документ с флагом VYDACHA
+      // Если все ок, то добавляем в коллекцию case1 документ с флагом VYDACHA
       await FbAdmin.addCase1Doc("VYDACHA", msg);
-			// Добавляем в коллекцию users документ с данными пользователя
+      // Добавляем в коллекцию users документ с данными пользователя
       await FbAdmin.addUserDoc(`${msg.chat?.id}`, msg, data);
       await bot.sendMessage(chatId, `${msg.chat.username} вы авторизованы`);
-			// Отправляем всем админам сообщение о том, что пользователь авторизован
-			adminUsers!.forEach((doc) => {
-				bot.sendMessage(doc.data().chatId, `${msg.chat.username} ${userGroup} успешная выдача ключа`);
-			})
+      // Отправляем всем админам сообщение о том, что пользователь авторизован
+      adminUsers!.forEach((doc) => {
+        bot.sendMessage(
+          doc.data().chatId,
+          `${msg.chat.username} ${userGroup} успешная выдача ключа`
+        );
+      });
     }
   }
 });
+
+// FbAdmin.addSerialCode('P7,Ln40e6hNC1sVu3.RqQFfxaKI8!_Gl', 'Diller 1')
 
 // Express routes
 app.post("/auth", (req, res) => {
@@ -86,6 +94,23 @@ app.post("/auth", (req, res) => {
   res.json({
     message: "Auth ok!",
   });
+  res.end();
+});
+
+app.post("/serial", async (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, application/json"
+  );
+  const serialCodeReq = req.body.serialCode;
+  const authUserReq = req.body.authUser;
+
+	const serialCode =	await FbAdmin.getSerialCodeDoc(serialCodeReq);
+	// const authUser = await FbAdmin.getUsersDocsWhere('uid', authUserReq.uid);
+
+  res.json(serialCode);
   res.end();
 });
 

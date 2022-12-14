@@ -18,14 +18,14 @@ const Header: React.FC<HeaderProps> = ({isAuthorized, setIsAuthorized, tgUser}) 
 
   return (
     <header className="header">
+			
       <Link className="header__link" to={"/"}>
         Главная
       </Link>
       <Link className="header__link" to={"/serial"}>
-        Проверка серийного номера
+        Серийный номер
       </Link>
-      {/* {isAuthorized && tgUser && ( */}
-      {isAuthorized && (
+      {isAuthorized && tgUser && (
         <div className="header__user">
           <span>{tgUser?.username || "USERNAME"}</span>
           <button onClick={onLogout}>Выход</button>

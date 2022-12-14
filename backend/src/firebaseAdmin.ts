@@ -1,7 +1,7 @@
 import TelegramBot from "node-telegram-bot-api";
 import admin from "firebase-admin";
 import { Timestamp } from "firebase-admin/firestore";
-import type { case1Flag, WebAppData, FbUser, FbCase1 } from "./models";
+import type { case1Flag, WebAppData, FbUser, FbCase1, FbSerialCode } from "./models";
 const serviceAccount = require("../fbServiceAccountKey.json");
 
 // Firebase Admin
@@ -15,6 +15,7 @@ const db = admin.firestore();
 // Firebase collections
 const case1DocRef = db.collection("case1");
 const usersDocRef = db.collection("users");
+const serialCodes = db.collection("serialCodes");
 
 // Firebase functions
 const getUserDoc = async (tgUserId: string) => {
@@ -34,7 +35,7 @@ const addCase1Doc = async (flag: case1Flag, msg: TelegramBot.Message) => {
 
   const newCase1Doc: FbCase1 = {
     str: Math.cos(Math.random()),
-    date: Timestamp.now().toDate().toUTCString(),
+    date: Timestamp.now().toDate().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' }),
     username: msg.chat.username!,
     flag: flag,
     group: userDoc?.group || "user",
@@ -63,9 +64,28 @@ const addUserDoc = async (
   usersDocRef.doc(tgUserId).set(newUserDoc);
 };
 
+const getSerialCodeDoc = async (code: string) => {
+	const serialCodeDoc = await serialCodes.doc(code).get();
+	if (!serialCodeDoc.exists) return null;
+	return serialCodeDoc.data();
+};
+
+const addSerialCode = async (code: string, diller: string) => {
+	const newSerialCodeDoc: FbSerialCode = {
+		code,
+		country: "Russia",
+		diller,
+		date: Timestamp.now().toDate().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' }),
+	}
+
+  serialCodes.doc(code).set(newSerialCodeDoc);
+};
+
 export const FbAdmin = {
   getUserDoc,
   getUsersDocsWhere,
   addCase1Doc,
   addUserDoc,
+	getSerialCodeDoc,
+  addSerialCode,
 };

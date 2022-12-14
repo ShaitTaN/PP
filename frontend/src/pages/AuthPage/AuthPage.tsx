@@ -142,6 +142,7 @@ const AuthPage: React.FC<AuthPageProps> = ({
         value={code}
         onChange={(e) => setCode(e.target.value)}
       />
+			<MainButton onClick={onSendData}>Отправить</MainButton>
     </div>
   );
 };

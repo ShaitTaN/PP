@@ -83,7 +83,10 @@ bot.on("message", async (msg) => {
     // Получение пользователя, который пытается авторизоваться
     const currentUser = await FbAdmin.getUserDoc(`${msg.chat?.id}`);
     const userGroup = currentUser ? currentUser.group : "user";
-    if (data.error) {
+		if(data.serialCode){
+			await bot.sendMessage(chatId, JSON.stringify(data));
+		}
+    else if (data.error) {
       // Если ошибка, то добавляем в коллекцию case1 документ с флагом VZLOM
       await FbAdmin.addCase1Doc("VZLOM", msg);
       await bot.sendMessage(chatId, `${msg.chat.username} ${data.error.code}`);
@@ -96,7 +99,8 @@ bot.on("message", async (msg) => {
           );
         });
       }
-    } else {
+    } 
+		else if (data.result){
       // Если все ок, то добавляем в коллекцию case1 документ с флагом VYDACHA
       await FbAdmin.addCase1Doc("VYDACHA", msg);
       // Добавляем в коллекцию users документ с данными пользователя

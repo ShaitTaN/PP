@@ -40,7 +40,7 @@ function App() {
 					if(tgUser){
 						const docRef = doc(db, "users", `${tgUser.id}`);
 						const docSnap = await getDoc(docRef);
-						if(docSnap.exists()) setUserGroup(docSnap.data().userGroup);
+						if(docSnap.exists()) setUserGroup(docSnap.data().group);
 					}else{
 						await setUserGroup(data.userGroup);	
 					}

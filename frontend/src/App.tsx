@@ -15,7 +15,7 @@ function App() {
   const [userGroup, setUserGroup] = React.useState("user");
   const [idToken, setIdToken] = React.useState("");
   const { user } = useTelegram();
-	const [data, setData] = React.useState<any>(null);
+  const [data, setData] = React.useState<any>(null);
 
   // При монтировании компонента App, проверяем авторизован ли пользователь
   React.useEffect(() => {
@@ -34,28 +34,29 @@ function App() {
           });
           const data = await res.json();
           await setUserGroup(data.userGroup);
-					await setData(data);
-					console.log(userGroup)
+          await setData(data);
+          console.log(userGroup);
         } catch (error) {
           console.log(error);
         }
         setIsAuthorized(true);
       } else {
         setIsAuthorized(false);
-				setUserGroup("user");
+        setUserGroup("user");
       }
     });
   }, [isAuthorized, userGroup]);
 
   return (
     <div className="wrapper">
-			{userGroup}
-			{ user}
+      {userGroup}
+      {user}
+      {data}
       <Header
         tgUser={user}
         isAuthorized={isAuthorized}
         setIsAuthorized={setIsAuthorized}
-				setIdToken={setIdToken}
+        setIdToken={setIdToken}
       />
       <Routes>
         <Route path="/" element={<MainPage />} />

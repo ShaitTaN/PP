@@ -15,7 +15,7 @@ function App() {
   const [userGroup, setUserGroup] = React.useState("user");
   const [idToken, setIdToken] = React.useState("");
   const { user: tgUser } = useTelegram();
-  const [data, setData] = React.useState<any>(null);
+  // const [data, setData] = React.useState<any>(null);
 
   // При монтировании компонента App, проверяем авторизован ли пользователь
   React.useEffect(() => {
@@ -33,7 +33,7 @@ function App() {
             },
           });
           const data = await res.json();
-          await setData(data);
+          // await setData(data);
           await setUserGroup(data.userGroup);
         } catch (error) {
           console.log(error);

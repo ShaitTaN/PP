@@ -1,6 +1,6 @@
 import React from 'react'
 import FormInput from '../../components/FormInput/FormInput'
-import MainButton from '../../components/MainButton/MainButton'
+import { useTelegram } from '../../hooks/useTelegram'
 import './serialCodePage.css'
 
 interface SerialCodePageAddProps {
@@ -11,8 +11,9 @@ const SerialCodePageAdd: React.FC<SerialCodePageAddProps> = ({idToken}) => {
 	const [serialCode, setSerialCode] = React.useState('')
 	const [country, setCountry] = React.useState('')
 	const [diller, setDiller] = React.useState('')
+	const {tg} = useTelegram()
 
-	const onAddSerialCode = async () => {
+	const onAddSerialCode = React.useCallback(async () => {
 		if(!serialCode || !country || !diller) return alert('Заполните все поля!')
 		try {
 			const res = await fetch('http://localhost:3030/serial-add', {
@@ -31,7 +32,33 @@ const SerialCodePageAdd: React.FC<SerialCodePageAddProps> = ({idToken}) => {
 		} catch (error) {
 			console.log(error)
 		}
-	}
+	}, [serialCode, country, diller, idToken])
+
+	// Подписка на событие нажатия на main телеграм кнопку
+	React.useEffect(() => {
+		tg.onEvent("mainButtonClicked", onAddSerialCode);
+		return () => {
+			tg.offEvent("mainButtonClicked", onAddSerialCode);
+		};
+	}, [tg, onAddSerialCode]);
+
+	// Изменение текста main телеграм кнопки и ее отображение
+	React.useEffect(() => {
+		tg?.MainButton.setParams({ text: "Добавить" });
+		tg?.MainButton.show();
+		return () => {
+			tg?.MainButton.hide();
+		};
+	}, [tg.MainButton]);
+
+	// Отключение main телеграм кнопки при незаполненных полях
+	React.useEffect(() => {
+		if (!serialCode || !country || !diller) {
+			tg?.MainButton.disable();
+		} else {
+			tg?.MainButton.enable();
+		}
+	}, [tg.MainButton, serialCode, country, diller]);
 
 	return (
 		<div className="serialCodePage">
@@ -52,7 +79,6 @@ const SerialCodePageAdd: React.FC<SerialCodePageAddProps> = ({idToken}) => {
           value={diller}
           onChange={(e) => setDiller(e.target.value)}
         />
-        <MainButton onClick={onAddSerialCode}>Добавить</MainButton>
       </div>
     </div>
 	)

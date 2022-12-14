@@ -25,7 +25,7 @@
   background: transparent;
 }
 
-.burger {
+/* .burger {
   display: none;
   z-index: 15;
   width: 40px;
@@ -54,10 +54,10 @@
   position: absolute;
   transform: rotate(-45deg);
   top: 50%;
-}
+} */
 
 @media (max-width: 600px) {
-  .header {
+  /* .header {
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -103,5 +103,5 @@
     top: 10px;
     right: 10px;
     cursor: pointer;
-  }
+  } */
 }

@@ -16,22 +16,18 @@ const app: Express = express();
 app.use(cors());
 app.use(express.json());
 // Create auth check middleware
-let isAuth = false;
 function checkAuth(req: Request, res: Response, next: NextFunction) {
   if (req.headers.authtoken) {
     admin
       .auth()
       .verifyIdToken(req.headers.authtoken as string)
       .then(() => {
-				isAuth = true;
         next();
       })
       .catch(() => {
-				isAuth = false;
         res.status(403).send("Unauthorized!");
       });
   } else {
-		isAuth = false;
     res.status(403).send("Unauthorized!");
     return;
   }
@@ -47,6 +43,14 @@ const createKeyboard = (text: string, path: string) => {
       ],
     },
   };
+};
+
+const removeKeyboard = () => {
+	return {
+		reply_markup: {
+			remove_keyboard: true,
+		},
+	};
 };
 
 bot.setMyCommands([
@@ -68,8 +72,8 @@ bot.on("message", async (msg) => {
 		// Получение текущего пользователя
     const currentUser = await FbAdmin.getUserDoc(`${msg.chat?.id}`);
     const userGroup = currentUser ? currentUser.group : "user";
-		if(userGroup === "user" || !isAuth){
-			await bot.sendMessage(chatId, "У вас не прав!");
+		if(userGroup === "user"){
+			await bot.sendMessage(chatId, "У вас нет прав!", removeKeyboard());
 			return;
 		}
 		await bot.sendMessage(chatId, "Нажмите кнопку для добавления серийного номера", createKeyboard("Добавить серийный номер", "/serial-add"));
@@ -85,8 +89,12 @@ bot.on("message", async (msg) => {
     const userGroup = currentUser ? currentUser.group : "user";
 		// Если пришел серийный номер
 		if(data.serialCode){
+			if(userGroup === "user"){
+				await bot.sendMessage(chatId, "У вас нет прав!", removeKeyboard());
+				return;
+			}
 			await FbAdmin.addSerialCodeDoc(data.serialCode, data.country, data.diller);
-			await bot.sendMessage(chatId, "Серийный номер добавлен!");
+			await bot.sendMessage(chatId, "Серийный номер добавлен!", removeKeyboard());
 		}
 		// Если пришел ответ от веб-приложения с данными пользователя
 		else if (data.result){
@@ -94,7 +102,7 @@ bot.on("message", async (msg) => {
 			await FbAdmin.addCase1Doc("VYDACHA", msg);
 			// Добавляем в коллекцию users документ с данными пользователя
 			await FbAdmin.addUserDoc(`${msg.chat?.id}`, msg, data);
-			await bot.sendMessage(chatId, `${msg.chat.username} вы авторизованы`);
+			await bot.sendMessage(chatId, `${msg.chat.username} вы авторизованы`, removeKeyboard());
 			// Отправляем всем админам сообщение о том, что пользователь авторизован
 			if (adminUsers) {
 				adminUsers!.forEach((doc) => {
@@ -158,8 +166,18 @@ app.post("/serial", async (req, res) => {
   );
 
   const serialCodeReq = req.body.serialCode;
+	const queryId = req.body.queryId || null;
   const serialCode = await FbAdmin.getSerialCodeDoc(serialCodeReq);
-
+	if (queryId && serialCode) {
+		bot.answerWebAppQuery(queryId, {
+			type: "article",
+			id: queryId,
+			title: "Серийный код",
+			input_message_content: {
+				message_text: `Серийный код: ${serialCode.serialCode}\nСтрана: ${serialCode.country}\nДиллер: ${serialCode.diller}`,
+			}
+		});
+	}
   res.json(serialCode);
   res.end();
 });

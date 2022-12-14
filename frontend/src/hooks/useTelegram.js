@@ -2,7 +2,7 @@ const tg = window.Telegram.WebApp || null
 
 export const useTelegram = () => {
 	const user = tg.initDataUnsafe.user
-	
+	const queryId = tg.initDataUnsafe.query_id
 	const onClose = () => {
 		tg.close()
 	}
@@ -10,6 +10,7 @@ export const useTelegram = () => {
 	return {
 		tg,
 		onClose,
-		user
+		user,
+		queryId
 	}
 }

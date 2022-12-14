@@ -15,6 +15,7 @@ function App() {
   const [userGroup, setUserGroup] = React.useState("user");
   const [idToken, setIdToken] = React.useState("");
   const { user } = useTelegram();
+	const [data, setData] = React.useState<any>(null);
 
   // При монтировании компонента App, проверяем авторизован ли пользователь
   React.useEffect(() => {
@@ -33,6 +34,7 @@ function App() {
           });
           const data = await res.json();
           await setUserGroup(data.userGroup);
+					await setData(data);
 					console.log(userGroup)
         } catch (error) {
           console.log(error);
@@ -43,12 +45,12 @@ function App() {
 				setUserGroup("user");
       }
     });
-		// eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthorized, userGroup]);
 
   return (
     <div className="wrapper">
 			{userGroup}
+			{ JSON.stringify(data)}
       <Header
         tgUser={user}
         isAuthorized={isAuthorized}

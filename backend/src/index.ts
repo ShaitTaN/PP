@@ -39,49 +39,75 @@ const createKeyboard = () => {
   return {
     reply_markup: {
       keyboard: [
-        [{ text: 'Авторизоваться', web_app: { url: webAppUrl + '/auth' } }],
-        [{ text: 'Проверить серийный номер', web_app: { url: webAppUrl + '/serial' } }],
-        [{ text: 'Добавить серийный номер', web_app: { url: webAppUrl + '/serial-add' } }],
+        [{ text: "Авторизоваться", web_app: { url: webAppUrl + "/auth" } }],
+        [
+          {
+            text: "Проверить серийный номер",
+            web_app: { url: webAppUrl + "/serial" },
+          },
+        ],
+        [
+          {
+            text: "Добавить серийный номер",
+            web_app: { url: webAppUrl + "/serial-add" },
+          },
+        ],
       ],
     },
   };
 };
 
 const removeKeyboard = () => {
-	return {
-		reply_markup: {
-			remove_keyboard: true,
-		},
-	};
+  return {
+    reply_markup: {
+      remove_keyboard: true,
+    },
+  };
 };
 
-bot.setMyCommands([
-	{ command: "/menu", description: "Меню" },
-]);
+bot.setMyCommands([{ command: "/menu", description: "Меню" }]);
 
 bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
   const text = msg.text;
 
   if (text === "/start") {
-    await bot.sendMessage(chatId, "Здравствуйте, для начала авторизуйтесь.", createKeyboard());
+    await bot.sendMessage(
+      chatId,
+      "Здравствуйте, для начала авторизуйтесь.",
+      createKeyboard()
+    );
   }
-	if (text === "/menu") {
-		await bot.sendMessage(chatId, "Выберите нужное действие", createKeyboard());
-	}
+  if (text === "/menu") {
+    await bot.sendMessage(chatId, "Выберите нужное действие", createKeyboard());
+  }
+  if (text === "/test") {
+    await bot.sendMessage(chatId, "Тестовое сообщение", {
+      reply_markup: {
+        inline_keyboard: [
+          [
+            {
+              text: "Проверить серийный номер",
+              web_app: { url: webAppUrl + "/serial" },
+            },
+          ],
+        ],
+      },
+    });
+  }
   // if (text === "/auth") {
   //   await bot.sendMessage(chatId, "Нажмите кнопку для авторизации", createKeyboard());
   // }
-	// if (text === "/serial_add") {
-	// 	// Получение текущего пользователя
+  // if (text === "/serial_add") {
+  // 	// Получение текущего пользователя
   //   const currentUser = await FbAdmin.getUserDoc(`${msg.chat?.id}`);
   //   const userGroup = currentUser ? currentUser.group : "user";
-	// 	if(userGroup === "user"){
-	// 		await bot.sendMessage(chatId, "У вас нет прав!", removeKeyboard());
-	// 		return;
-	// 	}
-	// 	await bot.sendMessage(chatId, "Нажмите кнопку для добавления серийного номера", createKeyboard("Добавить серийный номер", "/serial-add"));
-	// }
+  // 	if(userGroup === "user"){
+  // 		await bot.sendMessage(chatId, "У вас нет прав!", removeKeyboard());
+  // 		return;
+  // 	}
+  // 	await bot.sendMessage(chatId, "Нажмите кнопку для добавления серийного номера", createKeyboard("Добавить серийный номер", "/serial-add"));
+  // }
 
   // Если пришел ответ от веб-приложения
   if (msg?.web_app_data?.data) {
@@ -91,44 +117,49 @@ bot.on("message", async (msg) => {
     // Получение пользователя, который пытается авторизоваться
     const currentUser = await FbAdmin.getUserDoc(`${msg.chat?.id}`);
     const userGroup = currentUser ? currentUser.group : "user";
-		// Если пришел серийный номер
-		if(data.msg == "add_serial_code"){
-			if(userGroup === "user"){
-				await bot.sendMessage(chatId, "У вас нет прав!");
-				return;
-			}
-			await FbAdmin.addSerialCodeDoc(data.serialCode, data.country, data.diller);
-			await bot.sendMessage(chatId, "Серийный номер добавлен!");
-		}
-		// Если пришел ответ от веб-приложения с данными пользователя
-		else if (data.msg == "authorization"){
-			// Если все ок, то добавляем в коллекцию case1 документ с флагом VYDACHA
-			await FbAdmin.addCase1Doc("VYDACHA", msg);
-			// Добавляем в коллекцию users документ с данными пользователя
-			await FbAdmin.addUserDoc(`${msg.chat?.id}`, msg, data);
-			await bot.sendMessage(chatId, `${msg.chat.username} вы авторизованы`);
-			// Отправляем всем админам сообщение о том, что пользователь авторизован
-			if (adminUsers) {
-				adminUsers!.forEach((doc) => {
-					bot.sendMessage(
-						doc.data().chatId,
-						`${msg.chat.username} ${userGroup} успешная выдача ключа`
-					);
-				});
-			}
-		}
-		else if (data.msg == "get_serial_code"){
-			const serialCode = await FbAdmin.getSerialCodeDoc(data.serialCode)
-			if(serialCode){
-				await bot.sendMessage(chatId, `Серийный код: ${serialCode.code}\nСтрана: ${serialCode.country}\nДиллер: ${serialCode.diller} \nДата выдачи: ${serialCode.date}`);
-				return
-			}
-			await bot.sendMessage(chatId, "Серийный код не найден");
-		}
-		else if (data.msg == "authorized"){
-			await bot.sendMessage(chatId, `${msg.chat.username} вы авторизованы`);
-		}
-		// Если пришел ответ от веб-приложения с ошибкой
+    // Если пришел серийный номер
+    if (data.msg == "add_serial_code") {
+      if (userGroup === "user") {
+        await bot.sendMessage(chatId, "У вас нет прав!");
+        return;
+      }
+      await FbAdmin.addSerialCodeDoc(
+        data.serialCode,
+        data.country,
+        data.diller
+      );
+      await bot.sendMessage(chatId, "Серийный номер добавлен!");
+    }
+    // Если пришел ответ от веб-приложения с данными пользователя
+    else if (data.msg == "authorization") {
+      // Если все ок, то добавляем в коллекцию case1 документ с флагом VYDACHA
+      await FbAdmin.addCase1Doc("VYDACHA", msg);
+      // Добавляем в коллекцию users документ с данными пользователя
+      await FbAdmin.addUserDoc(`${msg.chat?.id}`, msg, data);
+      await bot.sendMessage(chatId, `${msg.chat.username} вы авторизованы`);
+      // Отправляем всем админам сообщение о том, что пользователь авторизован
+      if (adminUsers) {
+        adminUsers!.forEach((doc) => {
+          bot.sendMessage(
+            doc.data().chatId,
+            `${msg.chat.username} ${userGroup} успешная выдача ключа`
+          );
+        });
+      }
+    } else if (data.msg == "get_serial_code") {
+      const serialCode = await FbAdmin.getSerialCodeDoc(data.serialCode);
+      if (serialCode) {
+        await bot.sendMessage(
+          chatId,
+          `Серийный код: ${serialCode.code}\nСтрана: ${serialCode.country}\nДиллер: ${serialCode.diller} \nДата выдачи: ${serialCode.date}`
+        );
+        return;
+      }
+      await bot.sendMessage(chatId, "Серийный код не найден");
+    } else if (data.msg == "authorized") {
+      await bot.sendMessage(chatId, `${msg.chat.username} вы авторизованы`);
+    }
+    // Если пришел ответ от веб-приложения с ошибкой
     else if (data.msg == "invalid_code") {
       // Если ошибка, то добавляем в коллекцию case1 документ с флагом VZLOM
       await FbAdmin.addCase1Doc("VZLOM", msg);
@@ -142,10 +173,9 @@ bot.on("message", async (msg) => {
           );
         });
       }
-    } 
+    }
   }
 });
-
 
 // Express routes
 app.post("/auth", async (req, res) => {
@@ -179,20 +209,20 @@ app.post("/serial", async (req, res) => {
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept, application/json"
   );
-	console.log(req.body);
+  console.log(req.body);
   const serialCodeReq = req.body.serialCode;
   const serialCode = await FbAdmin.getSerialCodeDoc(serialCodeReq);
-	// const queryId = req.body.queryId || null;
-	// if (queryId && serialCode) {
-	// 	bot.answerWebAppQuery(queryId, {
-	// 		type: "article",
-	// 		id: queryId,
-	// 		title: "Серийный код",
-	// 		input_message_content: {
-	// 			message_text: `Серийный код: ${serialCode.code}\nСтрана: ${serialCode.country}\nДиллер: ${serialCode.diller} \nДата выдачи: ${serialCode.date}`,
-	// 		}
-	// 	});
-	// }
+  const queryId = req.body.queryId || null;
+  if (queryId && serialCode) {
+    bot.answerWebAppQuery(queryId, {
+      type: "article",
+      id: queryId,
+      title: "Серийный код",
+      input_message_content: {
+        message_text: `Серийный код: ${serialCode.code}\nСтрана: ${serialCode.country}\nДиллер: ${serialCode.diller} \nДата выдачи: ${serialCode.date}`,
+      },
+    });
+  }
   res.json(serialCode);
   res.end();
 });

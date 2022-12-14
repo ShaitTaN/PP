@@ -22,29 +22,29 @@ const SerialCodePage = () => {
   const [serialCode, setSerialCode] = React.useState("");
   const [data, setData] = React.useState<SerialCode | null>(null);
   const [isActive, setIsActive] = React.useState(false);
-  const { tg, user: tgUser } = useTelegram();
+  const { tg, user: tgUser, queryId} = useTelegram();
 
   const onSendSerialCode = React.useCallback(async () => {
     if (!serialCode) return;
     try {
-      if (!tgUser) {
+      // if (!tgUser) {
         const res = await fetch("http://localhost:3030/serial", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ serialCode }),
+          body: JSON.stringify({ serialCode, queryId }),
         });
         const data = await res.json();
 
         setIsActive(true);
         setData(data);
-      }
-      tg.sendData(JSON.stringify({ serialCode, msg: "get_serial_code" }));
+      // }
+      // tg.sendData(JSON.stringify({ serialCode, msg: "get_serial_code" }));
     } catch (error) {
       console.log(error);
     }
-  }, [serialCode, tg, tgUser]);
+  }, [serialCode, queryId]);
 
   // Подписка на событие нажатия на main телеграм кнопку
   React.useEffect(() => {

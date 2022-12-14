@@ -7,6 +7,9 @@
 .header__link{
 	font-size: 20px;
 }
+.header__user{
+	margin-left: auto;
+}
 .header__user span {
   margin-right: 10px;
   position: relative;

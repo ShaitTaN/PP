@@ -70,10 +70,10 @@ const getSerialCodeDoc = async (code: string) => {
 	return serialCodeDoc.data();
 };
 
-const addSerialCode = async (code: string, diller: string) => {
+const addSerialCode = async (code: string, country:string, diller: string) => {
 	const newSerialCodeDoc: FbSerialCode = {
 		code,
-		country: "Russia",
+		country,
 		diller,
 		date: Timestamp.now().toDate().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' }),
 	}

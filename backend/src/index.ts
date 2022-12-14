@@ -33,7 +33,7 @@ function checkAuth(req: Request, res: Response, next: NextFunction) {
     return;
   }
 }
-app.use("/auth", checkAuth);
+app.use(["/auth", '/serial-add'], checkAuth);
 
 // Bot logic
 bot.on("message", async (msg) => {
@@ -89,10 +89,24 @@ bot.on("message", async (msg) => {
 // FbAdmin.addSerialCode('P7,Ln40e6hNC1sVu3.RqQFfxaKI8!_Gl', 'Diller 1')
 
 // Express routes
-app.post("/auth", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "*");
+app.post("/auth", async (req, res) => {
+	res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, application/json"
+  );
+	const uid = req.body.uid;
+	let userGroup = 'user'
+	if(uid){
+		const users = await FbAdmin.getUsersDocsWhere('uid', uid);
+		users?.forEach((doc) => {
+			userGroup = doc.data().group;
+		});
+	}
   res.json({
     message: "Auth ok!",
+		userGroup: userGroup,
   });
   res.end();
 });
@@ -104,14 +118,29 @@ app.post("/serial", async (req, res) => {
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept, application/json"
   );
-  const serialCodeReq = req.body.serialCode;
-  const authUserReq = req.body.authUser;
 
+  const serialCodeReq = req.body.serialCode;
 	const serialCode =	await FbAdmin.getSerialCodeDoc(serialCodeReq);
-	// const authUser = await FbAdmin.getUsersDocsWhere('uid', authUserReq.uid);
 
   res.json(serialCode);
   res.end();
+});
+
+app.post("/serial-add", async (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, application/json"
+  );
+
+  const serialCode= req.body.serialCode;
+	const country = req.body.country;
+	const diller = req.body.diller;
+
+	await FbAdmin.addSerialCode(serialCode, country, diller)
+	
+  res.end("ok");
 });
 
 app.listen(PORT, () => {

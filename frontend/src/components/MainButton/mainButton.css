@@ -9,6 +9,9 @@
   border: 1px solid var(--tg-theme-text-color);
 	width: 100%;
 }
+.mainButton a{
+	color: var(--tg-theme-text-color);
+}
 .mainButton:hover{
 	opacity: 0.8;
 }

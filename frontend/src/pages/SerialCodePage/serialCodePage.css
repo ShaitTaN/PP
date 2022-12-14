@@ -4,6 +4,7 @@
 	align-items: center;
 	margin-top: 25px;
 	padding: 10px;
+	height: 100%;
 }
 .serialCodePage h2{
 	margin-bottom: 20px;
@@ -20,4 +21,7 @@
 }
 .serialCodePage__data p{
 	margin-bottom: 10px;
+}
+.serialCodePage__add{
+	margin-top: 50px;
 }

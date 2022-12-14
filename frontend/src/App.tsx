@@ -40,10 +40,9 @@ function App() {
 					if(tgUser){
 						const docRef = doc(db, "users", `${tgUser.id}`);
 						const docSnap = await getDoc(docRef);
-						docSnap.exists() && setUserGroup(docSnap.data().userGroup);
+						if(docSnap.exists()) setUserGroup(docSnap.data().userGroup);
 					}else{
-						await setUserGroup(data.userGroup);
-						
+						await setUserGroup(data.userGroup);	
 					}
         } catch (error) {
           console.log(error);
@@ -58,9 +57,9 @@ function App() {
 
   return (
     <div className="wrapper">
-      {userGroup}
-      {JSON.stringify(tgUser)}
-      {JSON.stringify(data)}
+      {`usergroup - ${userGroup} `}
+      {`data - ${JSON.stringify(data)} `}
+      {`tgUser - ${JSON.stringify(tgUser)} `}
       <Header
         tgUser={tgUser}
         isAuthorized={isAuthorized}

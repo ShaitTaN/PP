@@ -4,13 +4,11 @@ import Header from "./components/Header/Header";
 import { Routes, Route } from "react-router-dom";
 import MainPage from "./pages/MainPage/MainPage";
 import AuthPage from "./pages/AuthPage/AuthPage";
-import { auth, db } from "./firebase";
+import { auth} from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { useTelegram } from "./hooks/useTelegram";
 import SerialCodePage from "./pages/SerialCodePage/SerialCodePage";
 import SerialCodePageAdd from "./pages/SerialCodePage/SerialCodePageAdd";
-import { doc, getDoc } from "firebase/firestore";
-
 
 function App() {
   const [isAuthorized, setIsAuthorized] = React.useState(false);
@@ -34,16 +32,9 @@ function App() {
               "Content-Type": "application/json",
             },
           });
-					const data = await res.json();
-					await setData(data);
-					
-					if(tgUser){
-						const docRef = doc(db, "users", `${tgUser.id}`);
-						const docSnap = await getDoc(docRef);
-						if(docSnap.exists()) setUserGroup(docSnap.data().group);
-					}else{
-						await setUserGroup(data.userGroup);	
-					}
+          const data = await res.json();
+          await setData(data);
+          await setUserGroup(data.userGroup);
         } catch (error) {
           console.log(error);
         }
@@ -57,9 +48,6 @@ function App() {
 
   return (
     <div className="wrapper">
-      {`usergroup - ${userGroup} `}
-      {`data - ${JSON.stringify(data)} `}
-      {`tgUser - ${JSON.stringify(tgUser)} `}
       <Header
         tgUser={tgUser}
         isAuthorized={isAuthorized}

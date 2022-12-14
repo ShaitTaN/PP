@@ -50,7 +50,7 @@ function App() {
   return (
     <div className="wrapper">
 			{userGroup}
-			{ JSON.stringify(data)}
+			{ user}
       <Header
         tgUser={user}
         isAuthorized={isAuthorized}

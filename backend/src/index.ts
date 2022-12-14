@@ -103,6 +103,7 @@ app.post("/auth", async (req, res) => {
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept, application/json"
   );
+	res.header("Content-Type", "application/json")
   const uid = req.body.uid;
   let userGroup = "user";
   if (uid) {

@@ -48,6 +48,7 @@ function App() {
 
   return (
     <div className="wrapper">
+			{JSON.stringify(tgUser)}
       <Header
         tgUser={tgUser}
         isAuthorized={isAuthorized}

@@ -30,7 +30,7 @@ const AuthPage: React.FC<AuthPageProps> = ({
   const [phone, setPhone] = React.useState("+7");
   const [code, setCode] = React.useState("");
   const [isHintActive, setIsHintActive] = React.useState(false);
-  const { tg } = useTelegram();
+  const { tg} = useTelegram();
 
 	// Коллбэк для отправки данных боту
   const onSendData = React.useCallback(() => {

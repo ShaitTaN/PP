@@ -26,7 +26,7 @@ const Header: React.FC<HeaderProps> = ({isAuthorized,setIsAuthorized,tgUser, set
 
   return (
     <>
-		{tgUser.username}
+		{tgUser?.username}
       <div className={`burger ${isMenuActive ? 'active' : ''}`} onClick={onToggleMenu}>
         <span></span>
         <span></span>
@@ -36,7 +36,7 @@ const Header: React.FC<HeaderProps> = ({isAuthorized,setIsAuthorized,tgUser, set
         <Link className="header__link" to={"/"}>
           Главная
         </Link>
-        {!tgUser.username && <Link className="header__link" to={"/serial"}>
+        {!tgUser?.username && <Link className="header__link" to={"/serial"}>
           Серийный номер
         </Link>}
         { tgUser && (

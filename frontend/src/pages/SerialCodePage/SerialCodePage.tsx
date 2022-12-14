@@ -40,9 +40,9 @@ const SerialCodePage: React.FC<SerialCodePageProps> = ({ userGroup }) => {
 
 		// Подписка на событие нажатия на main телеграм кнопку
 		React.useEffect(() => {
-			tg.onEvent("mainButtonClicked", () => onSendSerialCode());
+			tg.MainButton.onClick(() => onSendSerialCode());
 			return () => {
-				tg.offEvent("mainButtonClicked", () => onSendSerialCode());
+				tg.MainButton.offClick(() => onSendSerialCode());
 			};
 		}, [tg, onSendSerialCode]);
 	

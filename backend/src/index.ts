@@ -174,7 +174,7 @@ app.post("/serial", async (req, res) => {
 			id: queryId,
 			title: "Серийный код",
 			input_message_content: {
-				message_text: `Серийный код: ${serialCode.code}\nСтрана: ${serialCode.country}\nДиллер: ${serialCode.diller}`,
+				message_text: `Серийный код: ${serialCode.code}\nСтрана: ${serialCode.country}\nДиллер: ${serialCode.diller} \nДата выдачи: ${serialCode.date}`,
 			}
 		});
 	}

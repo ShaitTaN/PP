@@ -182,23 +182,6 @@ app.post("/serial", async (req, res) => {
   res.end();
 });
 
-// app.post("/serial-add", async (req, res) => {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-//   res.header(
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content-Type, Accept, application/json"
-//   );
-
-//   const serialCode = req.body.serialCode;
-//   const country = req.body.country;
-//   const diller = req.body.diller;
-
-//   await FbAdmin.addSerialCode(serialCode, country, diller);
-
-//   res.end("ok");
-// });
-
 app.listen(PORT, () => {
   console.log(`⚡️[server]: Server is running at https://localhost:${PORT}`);
 });

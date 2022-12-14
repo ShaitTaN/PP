@@ -14,11 +14,11 @@ function App() {
   const [isAuthorized, setIsAuthorized] = React.useState(false);
   const [userGroup, setUserGroup] = React.useState("user");
   const [idToken, setIdToken] = React.useState("");
-  const { user: tgUser } = useTelegram();
-  // const [data, setData] = React.useState<any>(null);
+  const { user: tgUser, tg } = useTelegram();
 
   // При монтировании компонента App, проверяем авторизован ли пользователь
   React.useEffect(() => {
+		tg.ready()
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
@@ -44,7 +44,7 @@ function App() {
         setUserGroup("user");
       }
     });
-  }, [isAuthorized, tgUser]);
+  }, [isAuthorized, tgUser, tg]);
 
   return (
     <div className="wrapper">

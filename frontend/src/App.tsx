@@ -54,7 +54,7 @@ function App() {
         setIsAuthorized={setIsAuthorized}
         setIdToken={setIdToken}
       />
-			<ChatModal/>
+			{tg.platform === "unknown" && <ChatModal/>}
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route

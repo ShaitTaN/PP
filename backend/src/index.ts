@@ -151,13 +151,13 @@ bot.on("message", async (msg) => {
       if (serialCode) {
         await bot.sendMessage(
           chatId,
-          `Серийный код: ${serialCode.code}\nСтрана: ${serialCode.country}\nДиллер: ${serialCode.diller} \nДата выдачи: ${serialCode.date}`
+          `Серийный номер: ${serialCode.code}\nСтрана: ${serialCode.country}\nДиллер: ${serialCode.diller} \nДата выдачи: ${serialCode.date}`
         );
         return;
       }
-      await bot.sendMessage(chatId, "Серийный код не найден");
+      await bot.sendMessage(chatId, "Серийный номер не найден");
     } else if (data.msg == "authorized") {
-      await bot.sendMessage(chatId, `${msg.chat.username} вы авторизованы`);
+      await bot.sendMessage(chatId, `${msg.chat.username} вы уже авторизованы`);
     }
     // Если пришел ответ от веб-приложения с ошибкой
     else if (data.msg == "invalid_code") {

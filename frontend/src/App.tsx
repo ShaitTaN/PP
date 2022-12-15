@@ -9,6 +9,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useTelegram } from "./hooks/useTelegram";
 import SerialCodePage from "./pages/SerialCodePage/SerialCodePage";
 import SerialCodePageAdd from "./pages/SerialCodePage/SerialCodePageAdd";
+import ChatModal from "./components/ChatModal/ChatModal";
 
 function App() {
   const [isAuthorized, setIsAuthorized] = React.useState(false);
@@ -53,6 +54,7 @@ function App() {
         setIsAuthorized={setIsAuthorized}
         setIdToken={setIdToken}
       />
+			<ChatModal/>
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route

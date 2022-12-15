@@ -1,0 +1,13 @@
+.chatMessage{
+	background-color: var(--tg-theme-link-color);
+	border-radius: 6px;
+	padding: 10px;
+	max-width: 100%;
+	overflow-wrap: break-word;
+	margin-bottom: 10px;
+	box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.2);
+}
+.chatMessage.my{
+	align-self: flex-end;
+	background-color:  var(--tg-theme-hint-color);
+}

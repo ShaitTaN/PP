@@ -113,12 +113,6 @@ const AuthPage: React.FC<AuthPageProps> = ({
     return () => {
       clearTimeout(timer);
     };
-    // const user = auth.currentUser;
-    // if (user) {
-    // 	tg.sendData(JSON.stringify({ msg: "authorized" }));
-    // } else {
-    //   generateRecaptcha();
-    // }
   }, [tg]);
 
   return (

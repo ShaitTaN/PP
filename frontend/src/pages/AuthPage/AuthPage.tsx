@@ -7,7 +7,7 @@ import { auth } from "../../firebase";
 import {
   RecaptchaVerifier,
   signInWithPhoneNumber,
-  // onAuthStateChanged,
+  onAuthStateChanged,
 } from "firebase/auth";
 
 declare global {
@@ -99,20 +99,26 @@ const AuthPage: React.FC<AuthPageProps> = ({
 
   // При монтировании компонента проверяем авторизован ли пользователь
   React.useEffect(() => {
-    // onAuthStateChanged(auth, (user) => {
-    // 	if (user) {
-    // 		tg.sendData(JSON.stringify({ msg: "authorized" }))
-    // 	} else {
-    // 		generateRecaptcha();
-    // 	}
-    // });
+    let timer: NodeJS.Timeout;
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        timer = setTimeout(() => {
+          tg.sendData(JSON.stringify({ msg: "authorized" }));
+        }, 1000);
+      } else {
+        generateRecaptcha();
+      }
+    });
 
-    const user = auth.currentUser;
-    if (user) {
-			tg.sendData(JSON.stringify({ msg: "authorized" }));
-    } else {
-      generateRecaptcha();
-    }
+    return () => {
+      clearTimeout(timer);
+    };
+    // const user = auth.currentUser;
+    // if (user) {
+    // 	tg.sendData(JSON.stringify({ msg: "authorized" }));
+    // } else {
+    //   generateRecaptcha();
+    // }
   }, [tg]);
 
   return (

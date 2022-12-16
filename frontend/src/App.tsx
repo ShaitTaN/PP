@@ -15,6 +15,7 @@ function App() {
   const [isAuthorized, setIsAuthorized] = React.useState(false);
   const [userGroup, setUserGroup] = React.useState("user");
   const [idToken, setIdToken] = React.useState("");
+	const [chatIsOpen, setChatIsOpen] = React.useState(true);
   const { user: tgUser, tg } = useTelegram();
 
   // При монтировании компонента App, проверяем авторизован ли пользователь
@@ -54,7 +55,7 @@ function App() {
         setIsAuthorized={setIsAuthorized}
         setIdToken={setIdToken}
       />
-			{tg.platform === "unknown" && <ChatModal/>}
+			{tg.platform === "unknown" && <ChatModal isOpen={chatIsOpen} setIsOpen={setChatIsOpen} />}
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route

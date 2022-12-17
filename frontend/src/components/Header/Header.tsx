@@ -6,24 +6,13 @@ import "./header.css";
 
 interface HeaderProps {
   isAuthorized: boolean;
-  setIsAuthorized: (isAuthorized: boolean) => void;
-  setIdToken: (idToken: string) => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
-  isAuthorized,
-  setIsAuthorized,
-  setIdToken,
+  isAuthorized
 }) => {
   const [isMenuActive, setIsMenuActive] = React.useState(false);
   const { tg, user: tgUser } = useTelegram();
-
-  // const onLogout = () => {
-  //   auth.signOut().then(() => {
-  //     setIsAuthorized(false);
-  // 		setIdToken('');
-  //   });
-  // };
 
   const onToggleMenu = () => {
     setIsMenuActive(!isMenuActive);
@@ -53,7 +42,6 @@ const Header: React.FC<HeaderProps> = ({
         {tgUser && (
           <div className="header__user">
             <span>{tgUser.username}</span>
-            {/* <button onClick={onLogout}>Выход</button> */}
           </div>
         )}
       </header>

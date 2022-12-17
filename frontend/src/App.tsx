@@ -52,8 +52,6 @@ function App() {
     <div className="wrapper">
       <Header
         isAuthorized={isAuthorized}
-        setIsAuthorized={setIsAuthorized}
-        setIdToken={setIdToken}
       />
 			{tg.platform === "unknown" && <ChatModal isOpen={chatIsOpen} setIsOpen={setChatIsOpen} />}
       <Routes>

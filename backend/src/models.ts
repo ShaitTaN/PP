@@ -49,3 +49,10 @@ export interface FbSerialCode {
 	diller: string;
 	date: string;
 }
+
+export interface FbMessage {
+	text: string;
+	date?: string;
+	from: string;
+	to: string;
+}

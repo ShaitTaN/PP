@@ -2,6 +2,8 @@ import TelegramBot from "node-telegram-bot-api";
 import express, { Express, Request, Response, NextFunction } from "express";
 import admin from "firebase-admin";
 import { FbAdmin } from "./firebaseAdmin";
+import events from "events";
+import { FbMessage } from "./models";
 const cors = require("cors");
 
 // Telegram bot
@@ -12,9 +14,12 @@ const webAppUrl = "https://remarkable-crostata-72b9ae.netlify.app";
 // Express init
 const PORT = 3030;
 const app: Express = express();
+const emitter = new events.EventEmitter();
+
 // Middleware
 app.use(cors());
 app.use(express.json());
+
 // Create auth check middleware
 function checkAuth(req: Request, res: Response, next: NextFunction) {
   if (req.headers.authtoken) {
@@ -57,20 +62,19 @@ const createKeyboard = () => {
   };
 };
 
-const removeKeyboard = () => {
-  return {
-    reply_markup: {
-      remove_keyboard: true,
-    },
-  };
-};
+// const removeKeyboard = () => {
+//   return {
+//     reply_markup: {
+//       remove_keyboard: true,
+//     },
+//   };
+// };
 
 bot.setMyCommands([{ command: "/menu", description: "Меню" }]);
 
 bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
   const text = msg.text;
-
   if (text === "/start") {
     await bot.sendMessage(
       chatId,
@@ -81,33 +85,14 @@ bot.on("message", async (msg) => {
   if (text === "/menu") {
     await bot.sendMessage(chatId, "Выберите нужное действие", createKeyboard());
   }
-  if (text === "/test") {
-    await bot.sendMessage(chatId, "Тестовое сообщение", {
-      reply_markup: {
-        inline_keyboard: [
-          [
-            {
-              text: "Проверить серийный номер",
-              web_app: { url: webAppUrl + "/serial" },
-            },
-          ],
-        ],
-      },
-    });
+
+  if (msg.reply_to_message) {
+    const text = msg.reply_to_message.text!;
+    const email = text?.split(" ")[2];
+    const newMessage = { text: msg.text!, from: "personal", to: email };
+    await FbAdmin.addMessageDoc(newMessage);
+    emitter.emit("newMessage", newMessage);
   }
-  // if (text === "/auth") {
-  //   await bot.sendMessage(chatId, "Нажмите кнопку для авторизации", createKeyboard());
-  // }
-  // if (text === "/serial_add") {
-  // 	// Получение текущего пользователя
-  //   const currentUser = await FbAdmin.getUserDoc(`${msg.chat?.id}`);
-  //   const userGroup = currentUser ? currentUser.group : "user";
-  // 	if(userGroup === "user"){
-  // 		await bot.sendMessage(chatId, "У вас нет прав!", removeKeyboard());
-  // 		return;
-  // 	}
-  // 	await bot.sendMessage(chatId, "Нажмите кнопку для добавления серийного номера", createKeyboard("Добавить серийный номер", "/serial-add"));
-  // }
 
   // Если пришел ответ от веб-приложения
   if (msg?.web_app_data?.data) {
@@ -188,7 +173,6 @@ app.post("/auth", async (req, res) => {
   res.header("Content-Type", "application/json");
   const uid = req.body.uid;
   let userGroup = "user";
-  let tgId = "";
   if (uid) {
     const users = await FbAdmin.getUsersDocsWhere("uid", uid);
     users?.forEach((doc) => {
@@ -212,19 +196,53 @@ app.post("/serial", async (req, res) => {
   console.log(req.body);
   const serialCodeReq = req.body.serialCode;
   const serialCode = await FbAdmin.getSerialCodeDoc(serialCodeReq);
-  const queryId = req.body.queryId || null;
-  if (queryId && serialCode) {
-    bot.answerWebAppQuery(queryId, {
-      type: "article",
-      id: queryId,
-      title: "Серийный код",
-      input_message_content: {
-        message_text: `Серийный код: ${serialCode.code}\nСтрана: ${serialCode.country}\nДиллер: ${serialCode.diller} \nДата выдачи: ${serialCode.date}`,
-      },
-    });
-  }
+  // const queryId = req.body.queryId || null;
+  // if (queryId && serialCode) {
+  //   bot.answerWebAppQuery(queryId, {
+  //     type: "article",
+  //     id: queryId,
+  //     title: "Серийный код",
+  //     input_message_content: {
+  //       message_text: `Серийный код: ${serialCode.code}\nСтрана: ${serialCode.country}\nДиллер: ${serialCode.diller} \nДата выдачи: ${serialCode.date}`,
+  //     },
+  //   });
+  // }
   res.json(serialCode);
   res.end();
+});
+
+// long polling
+app.get("/message", async (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, application/json"
+  );
+  emitter.once("newMessage", (message: any) => {
+    res.json(message);
+  });
+});
+
+app.post("/message", async (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, application/json"
+  );
+  const message: FbMessage = req.body;
+  FbAdmin.addMessageDoc(message);
+  // Отправляем сообщение всему персоналу
+  const personal = await FbAdmin.getUsersDocsWhere("group", "personal");
+  personal?.forEach((doc) => {
+    bot.sendMessage(
+      doc.data().chatId,
+      `Сообщение от: ${message.from} \n ${message.text}`
+    );
+  });
+  emitter.emit("newMessage", message);
+  res.status(200);
 });
 
 app.listen(PORT, () => {

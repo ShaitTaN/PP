@@ -1,5 +1,7 @@
 .chatModal{
 	position: fixed;
+	display: flex;
+	flex-direction: column;
 	z-index: 20;
 	bottom: 10px;
 	right: 10px;
@@ -61,9 +63,10 @@
 	transform: scale(0.9);
 }
 .chatModal__body{
-	height: calc(100% - 50px);
 	display: flex;
 	flex-direction: column;
+	height: calc(100% - 50px);
+	/* flex-grow: 1; */
 }
 .chatModal__body-messages{
 	flex-grow: 1;
@@ -75,6 +78,14 @@
 }
 .chatModal__body-input{
 	padding: 10px 20px;
+	position: relative;
+}
+.chatModal__body-input img{
+	height: 26px;
+	position: absolute;
+	right: 26px;
+	top: calc(50% - 13px);
+	cursor: pointer;
 }
 .chatModal__body-input input{
 	width: 100%;
@@ -86,4 +97,10 @@
 	border: 1px solid white;
   background: transparent;
 	font-size: 16px;
+	padding-right: 40px;
+}
+.chatModal__form{
+	flex-grow: 1;
+	padding: 10px;
+	margin-top: 30px;
 }

@@ -31,8 +31,8 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, setIsOpen }) => {
   const onSendEmail = () => {
     const validation = formSchema.safeParse({ email });
     if (!validation.success) {
-      const errors = validation.error.format();
-      setErrors(errors);
+      const validationErrors = validation.error.format();
+      setErrors(validationErrors);
       alert(errors.email?._errors.join(", "));
 			return
     }

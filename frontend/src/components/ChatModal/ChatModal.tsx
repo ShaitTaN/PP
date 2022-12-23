@@ -26,14 +26,12 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, setIsOpen }) => {
   ]);
   const [email, setEmail] = React.useState("");
   const [isChatActive, setIsChatActive] = React.useState(false);
-  const [errors, setErrors] = React.useState<any>();
 
   const onSendEmail = () => {
     const validation = formSchema.safeParse({ email });
     if (!validation.success) {
       const validationErrors = validation.error.format();
-      setErrors(validationErrors);
-      alert(errors.email?._errors.join(", "));
+      alert(validationErrors.email?._errors.join(", "));
 			return
     }
     setIsChatActive(true);

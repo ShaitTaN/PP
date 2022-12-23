@@ -9,6 +9,7 @@ import {
   signInWithPhoneNumber,
   onAuthStateChanged,
 } from "firebase/auth";
+import {z} from "zod";
 
 declare global {
   interface Window {
@@ -16,6 +17,12 @@ declare global {
     confirmationResult?: any;
   }
 }
+
+const formSchema = z.object({
+	email: z.string().email('Некорректный email'),
+	phone: z.string().regex(/^\+7\d{10}$/, "Номер телефона должен быть в формате +7XXXXXXXXXX"),
+	code: z.string().regex(/^\d{6}$/, "Код должен состоять из 6 цифр"),
+});
 
 interface AuthPageProps {
   isAuthorized: boolean;
@@ -34,6 +41,14 @@ const AuthPage: React.FC<AuthPageProps> = ({
 
   // Коллбэк для отправки данных боту
   const onSendData = React.useCallback(() => {
+		const validation = formSchema.safeParse({ email, code });
+		if (!validation.success) {
+			const validationErrors = validation.error.format();
+			alert(validationErrors.email?._errors.join(", "));
+			alert(validationErrors.code?._errors.join(", "));
+			return
+		}
+
     const confirmationResult = window.confirmationResult;
     confirmationResult
       .confirm(code)
@@ -48,6 +63,12 @@ const AuthPage: React.FC<AuthPageProps> = ({
 
   // Отправка кода на телефон
   const onSendCode = () => {
+		const validation = formSchema.safeParse({ phone });
+		if (!validation.success) {
+			const validationErrors = validation.error.format();
+			alert(validationErrors.phone?._errors.join(", "));
+			return
+		}
     const appVerifier = window.recaptchaVerifier;
 
     signInWithPhoneNumber(auth, phone, appVerifier)

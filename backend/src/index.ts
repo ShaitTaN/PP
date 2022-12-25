@@ -63,10 +63,11 @@ const createKeyboard = () => {
 };
 
 bot.setMyCommands([{ command: "/menu", description: "Меню" }]);
+
 bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
   const text = msg.text;
-
+	console.log(msg)
   if (text === "/start") {
     await bot.sendMessage(
       chatId,

@@ -6,13 +6,15 @@ interface Props{
 	placeholder: string;
 	value: string;
 	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	error?: string;
 }
 
-const FormInput: FC<Props> = ({type = 'text', placeholder, value, onChange}) => {
+const FormInput: FC<Props> = ({type = 'text', placeholder, value, onChange, error}) => {
   return (
     <div className={value ? "formInput active" : "formInput"}>
       <input id={placeholder} type={type} value={value} onChange={onChange}/>
-			<label htmlFor={placeholder} >{placeholder}</label>
+			<label className="formInput__placeholder" htmlFor={placeholder} >{placeholder}</label>
+			<span className="formInput__error">{error}</span>
     </div>
   );
 };

@@ -24,6 +24,10 @@ const formSchema = z.object({
 	code: z.string().regex(/^\d{6}$/, "Код должен состоять из 6 цифр"),
 });
 
+const phoneSchema = z.object({
+	phone: z.string().regex(/^\+7\d{10}$/, "Номер телефона должен быть в формате +7XXXXXXXXXX"),
+});
+
 interface AuthPageProps {
   isAuthorized: boolean;
   setIsAuthorized: (isAuthorized: boolean) => void;
@@ -37,15 +41,15 @@ const AuthPage: React.FC<AuthPageProps> = ({
   const [phone, setPhone] = React.useState("+7");
   const [code, setCode] = React.useState("");
   const [isHintActive, setIsHintActive] = React.useState(false);
+	const [errors, setErrors] = React.useState<any>();
   const { tg } = useTelegram();
 
   // Коллбэк для отправки данных боту
   const onSendData = React.useCallback(() => {
-		const validation = formSchema.safeParse({ email, code });
+		const validation = formSchema.safeParse({ email, phone,code });
 		if (!validation.success) {
 			const validationErrors = validation.error.format();
-			alert(validationErrors.email?._errors.join(", "));
-			alert(validationErrors.code?._errors.join(", "));
+			setErrors(validationErrors);
 			return
 		}
 
@@ -59,16 +63,20 @@ const AuthPage: React.FC<AuthPageProps> = ({
       .catch((error: Error) => {
         tg.sendData(JSON.stringify({ error, msg: "invalid_code" }));
       });
-  }, [tg, code, setIsAuthorized, email]);
+			setErrors(null);
+  }, [tg, code, setIsAuthorized, email, phone]);
 
   // Отправка кода на телефон
   const onSendCode = () => {
-		const validation = formSchema.safeParse({ phone });
+		const validation = phoneSchema.safeParse({ phone });
 		if (!validation.success) {
+			console.log(validation.error.format());
 			const validationErrors = validation.error.format();
-			alert(validationErrors.phone?._errors.join(", "));
+			setErrors(validationErrors);
 			return
 		}
+		setErrors(null)
+		setIsHintActive(true);
     const appVerifier = window.recaptchaVerifier;
 
     signInWithPhoneNumber(auth, phone, appVerifier)
@@ -143,17 +151,18 @@ const AuthPage: React.FC<AuthPageProps> = ({
         placeholder="Почта:"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
+				error={errors?.email?._errors.join(", ")}
       />
       <FormInput
         placeholder="Телефон:"
         value={phone}
         onChange={(e) => setPhone(e.target.value)}
+				error={errors?.phone?._errors.join(", ")}
       />
       <div className="authPage__checkCode">
         <MainButton
           onClick={() => {
             onSendCode();
-            setIsHintActive(true);
           }}
         >
           Выслать код по SMS

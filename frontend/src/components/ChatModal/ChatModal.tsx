@@ -6,7 +6,7 @@ import "./chatModal.css";
 import { z } from "zod";
 
 const formSchema = z.object({
-  email: z.string().email(),
+  email: z.string().email('Некорректный email'),
 });
 
 interface ChatModalProps {
@@ -26,15 +26,17 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, setIsOpen }) => {
   ]);
   const [email, setEmail] = React.useState("");
   const [isChatActive, setIsChatActive] = React.useState(false);
+  const [errors, setErrors] = React.useState<any>();
 
   const onSendEmail = () => {
     const validation = formSchema.safeParse({ email });
     if (!validation.success) {
       const validationErrors = validation.error.format();
-      alert(validationErrors.email?._errors.join(", "));
+      setErrors(validationErrors);
 			return
     }
     setIsChatActive(true);
+		setErrors(null)
   };
 
   const onSendMessage = async () => {
@@ -119,6 +121,7 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, setIsOpen }) => {
               placeholder="Почта:"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+							error={errors?.email?._errors.join(", ")}
             />
             <MainButton onClick={onSendEmail}>Отправить</MainButton>
           </div>

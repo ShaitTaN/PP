@@ -12,10 +12,10 @@
   padding: 10px 0;
   border-bottom: 1px solid var(--tg-theme-text-color);
 }
-.formInput input:focus ~ label {
+.formInput input:focus ~ .formInput__placeholder {
   transform: translateY(-22px);
 }
-.formInput label {
+.formInput__placeholder {
   position: absolute;
   display: block;
   left: 0;
@@ -23,6 +23,10 @@
   color: var(--tg-theme-hint-color);
   transition: transform 0.1s linear;
 }
-.formInput.active label {
+.formInput.active .formInput__placeholder {
   transform: translateY(-22px);
+}
+.formInput span{
+	color: rgb(206, 72, 72);
+	font-size: 14px;
 }

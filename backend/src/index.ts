@@ -7,12 +7,12 @@ import { FbMessage } from "./models";
 const cors = require("cors");
 
 // Telegram bot
-const token = "5720047994:AAEJpGg3e9jmV1nBc2_tQEoFPNHW2vfSwL0";
+const token = "5720047994:AAHSRgeRX9Kv0tCr4ErmZS0ItyozQ7gFSSg";
 const bot = new TelegramBot(token, { polling: true });
 const webAppUrl = "https://remarkable-crostata-72b9ae.netlify.app";
 
 // Express init
-const PORT = 3030;
+const PORT = 3040;
 const app: Express = express();
 const emitter = new events.EventEmitter();
 
@@ -90,6 +90,7 @@ bot.on("message", async (msg) => {
 
   // Если пришел ответ от веб-приложения
   if (msg?.web_app_data?.data) {
+		console.log(msg.web_app_data)
     const data = JSON.parse(msg.web_app_data.data);
     // Получаем всех админов
     const adminUsers = await FbAdmin.getUsersDocsWhere("group", "admin");

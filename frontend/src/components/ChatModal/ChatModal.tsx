@@ -42,7 +42,7 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, setIsOpen }) => {
   const onSendMessage = async () => {
     if (!textMessage) return;
     await setTextMessage("");
-    await fetch("http://localhost:3030/message", {
+    await fetch("http://localhost:3040/message", {
       method: "POST",
       body: JSON.stringify({ text: textMessage, from: email, to: "personal" }),
       headers: {
@@ -60,7 +60,7 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, setIsOpen }) => {
 
   const subscribeToChat = async () => {
     try {
-      const res = await fetch("http://localhost:3030/message");
+      const res = await fetch("http://localhost:3040/message");
       const data = await res.json();
       if (data.to === email || data.from === email) {
         setMessages((prev) => [...prev, data]);

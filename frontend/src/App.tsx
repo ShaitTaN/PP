@@ -26,7 +26,7 @@ function App() {
         try {
           const idToken = await user.getIdToken(true);
           setIdToken(idToken);
-          const res = await fetch("http://localhost:3030/auth", {
+          const res = await fetch("http://localhost:3040/auth", {
             method: "POST",
             body: JSON.stringify({ uid: user.uid }),
             headers: {

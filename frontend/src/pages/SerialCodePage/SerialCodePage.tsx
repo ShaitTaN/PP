@@ -28,7 +28,7 @@ const SerialCodePage = () => {
     if (!serialCode) return;
     try {
       if (tg.platform === "unknown") {
-        const res = await fetch("http://localhost:3030/serial", {
+        const res = await fetch("http://localhost:3040/serial", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

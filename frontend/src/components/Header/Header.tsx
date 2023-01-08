@@ -4,13 +4,8 @@ import { useTelegram } from "../../hooks/useTelegram";
 // import { auth } from "../../firebase";
 import "./header.css";
 
-interface HeaderProps {
-  isAuthorized: boolean;
-}
 
-const Header: React.FC<HeaderProps> = ({
-  isAuthorized
-}) => {
+const Header = () => {
   const [isMenuActive, setIsMenuActive] = React.useState(false);
   const { tg, user: tgUser } = useTelegram();
 

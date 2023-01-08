@@ -28,15 +28,8 @@ const phoneSchema = z.object({
 	phone: z.string().regex(/^\+7\d{10}$/, "Номер телефона должен быть в формате +7XXXXXXXXXX"),
 });
 
-interface AuthPageProps {
-  isAuthorized: boolean;
-  setIsAuthorized: (isAuthorized: boolean) => void;
-}
 
-const AuthPage: React.FC<AuthPageProps> = ({
-  isAuthorized,
-  setIsAuthorized,
-}) => {
+const AuthPage = () => {
   const [email, setEmail] = React.useState("");
   const [phone, setPhone] = React.useState("+7");
   const [code, setCode] = React.useState("");
@@ -57,14 +50,13 @@ const AuthPage: React.FC<AuthPageProps> = ({
     confirmationResult
       .confirm(code)
       .then((result: any) => {
-        setIsAuthorized(true);
         tg.sendData(JSON.stringify({ result, email, msg: "authorization" }));
       })
       .catch((error: Error) => {
         tg.sendData(JSON.stringify({ error, msg: "invalid_code" }));
       });
 			setErrors(null);
-  }, [tg, code, setIsAuthorized, email, phone]);
+  }, [tg, code, email, phone]);
 
   // Отправка кода на телефон
   const onSendCode = () => {

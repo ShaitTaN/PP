@@ -18,12 +18,12 @@ declare global {
   }
 }
 
+// ZOD схемы для валидации
 const formSchema = z.object({
 	email: z.string().email('Некорректный email'),
 	phone: z.string().regex(/^\+7\d{10}$/, "Номер телефона должен быть в формате +7XXXXXXXXXX"),
 	code: z.string().regex(/^\d{6}$/, "Код должен состоять из 6 цифр"),
 });
-
 const phoneSchema = z.object({
 	phone: z.string().regex(/^\+7\d{10}$/, "Номер телефона должен быть в формате +7XXXXXXXXXX"),
 });
@@ -131,8 +131,9 @@ const AuthPage: React.FC<AuthPageProps> = ({
     let timer: NodeJS.Timeout;
     onAuthStateChanged(auth, (user) => {
       if (user) {
+				const idToken = user.getIdToken();
         timer = setTimeout(() => {
-          tg.sendData(JSON.stringify({ msg: "authorized" }));
+          tg.sendData(JSON.stringify({ msg: "authorized", idToken }));
         }, 1000);
       } else {
         generateRecaptcha();

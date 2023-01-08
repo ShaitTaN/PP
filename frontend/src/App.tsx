@@ -26,17 +26,7 @@ function App() {
         try {
           const idToken = await user.getIdToken(true);
           setIdToken(idToken);
-          const res = await fetch("http://localhost:3040/auth", {
-            method: "POST",
-            body: JSON.stringify({ uid: user.uid }),
-            headers: {
-              AuthToken: idToken,
-              "Content-Type": "application/json",
-            },
-          });
-          const data = await res.json();
-          await setUserGroup(data.userGroup);
-					console.log(userGroup);
+					tg.sendData(JSON.stringify({ idToken }));
         } catch (error) {
           console.log(error);
         }

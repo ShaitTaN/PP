@@ -1,3 +1,4 @@
+import { getAuth } from "firebase-admin/auth";
 import TelegramBot from "node-telegram-bot-api";
 import express, { Express, Request, Response, NextFunction } from "express";
 import admin from "firebase-admin";
@@ -67,7 +68,7 @@ bot.setMyCommands([{ command: "/menu", description: "Меню" }]);
 bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
   const text = msg.text;
-	console.log(msg)
+  // console.log(msg)
   if (text === "/start") {
     await bot.sendMessage(
       chatId,
@@ -79,7 +80,7 @@ bot.on("message", async (msg) => {
     await bot.sendMessage(chatId, "Выберите нужное действие", createKeyboard());
   }
 
-	// Если персонал отправил сообщение пользователю
+  // Если персонал отправил сообщение пользователю
   if (msg.reply_to_message) {
     const text = msg.reply_to_message.text!;
     const email = text?.split(" ")[2];
@@ -90,11 +91,13 @@ bot.on("message", async (msg) => {
 
   // Если пришел ответ от веб-приложения
   if (msg?.web_app_data?.data) {
-		console.log(msg.web_app_data)
+    // console.log(msg.web_app_data)
     const data = JSON.parse(msg.web_app_data.data);
     // Получаем всех админов
     const adminUsers = await FbAdmin.getUsersDocsWhere("group", "admin");
     // Получение пользователя, который пытается авторизоваться
+		const decodeToken = await	getAuth().verifyIdToken(data.idToken)
+		console.log(decodeToken)
     const currentUser = await FbAdmin.getUserDoc(`${msg.chat?.id}`);
     const userGroup = currentUser ? currentUser.group : "user";
 
@@ -125,6 +128,9 @@ bot.on("message", async (msg) => {
         break;
 
       case "authorization":
+        await getAuth().updateUser(data.result.user.uid, {
+          email: data.email,
+        });
         // Если все ок, то добавляем в коллекцию case1 документ с флагом VYDACHA
         await FbAdmin.addCase1Doc("VYDACHA", msg);
         // Добавляем в коллекцию users документ с данными пользователя
@@ -180,6 +186,7 @@ app.post("/auth", async (req, res) => {
   res.header("Content-Type", "application/json");
   const uid = req.body.uid;
   let userGroup = "user";
+  console.log(req.body);
   if (uid) {
     const users = await FbAdmin.getUsersDocsWhere("uid", uid);
     users?.forEach((doc) => {

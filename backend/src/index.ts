@@ -104,12 +104,13 @@ bot.on("message", async (msg) => {
     } catch (error) {
       console.log(error);
     }
-    console.log(authUID);
+    console.log('authUID - ', authUID);
+		// Если пользователь авторизован, получаем его 
     const currentUser = authUID
       ? await FbAdmin.getUserDoc(`${msg.chat?.id}`)
       : null;
     const userGroup = currentUser ? currentUser.group : "user";
-    console.log(userGroup);
+    console.log('userGroup - ', userGroup);
 
     switch (data.msg) {
       case "add_serial_code":

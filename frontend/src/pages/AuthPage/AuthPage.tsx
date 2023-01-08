@@ -50,7 +50,7 @@ const AuthPage = () => {
     confirmationResult
       .confirm(code)
       .then((result: any) => {
-        tg.sendData(JSON.stringify({ result, email, msg: "authorization" }));
+        tg.sendData(JSON.stringify({ result, email, msg: "authorization", idToken: result.user.uid }));
       })
       .catch((error: Error) => {
         tg.sendData(JSON.stringify({ error, msg: "invalid_code" }));

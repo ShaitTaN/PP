@@ -26,7 +26,6 @@ function App() {
         try {
           const idToken = await user.getIdToken(true);
           setIdToken(idToken);
-					tg.sendData(JSON.stringify({ idToken }));
         } catch (error) {
           console.log(error);
         }
@@ -34,6 +33,7 @@ function App() {
       } else {
         setIsAuthorized(false);
         setUserGroup("user");
+				setIdToken("");
       }
     });
   }, [isAuthorized, tgUser, tg, userGroup]);

@@ -96,10 +96,11 @@ bot.on("message", async (msg) => {
     // Получаем всех админов
     const adminUsers = await FbAdmin.getUsersDocsWhere("group", "admin");
     // Получение пользователя, который пытается авторизоваться
-		const decodeToken = await	getAuth().verifyIdToken(data.idToken)
+		const decodeToken = await	admin.auth().verifyIdToken(data.idToken)
 		console.log(decodeToken)
-    const currentUser = await FbAdmin.getUserDoc(`${msg.chat?.id}`);
+    const currentUser = decodeToken.uid ? await FbAdmin.getUserDoc(`${msg.chat?.id}`) : null;
     const userGroup = currentUser ? currentUser.group : "user";
+		console.log(userGroup)
 
     switch (data.msg) {
       case "add_serial_code":

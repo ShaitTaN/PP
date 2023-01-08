@@ -15,15 +15,14 @@ const SerialCodePageAdd: React.FC<SerialCodePageAddProps> = ({idToken}) => {
 
 	const onAddSerialCode = React.useCallback(async () => {
 		try {
-			tg.sendData(JSON.stringify({ serialCode, country, diller, msg: 'add_serial_code' }));
+			tg.sendData(JSON.stringify({ idToken, serialCode, country, diller, msg: 'add_serial_code' }));
 			setSerialCode('')
 			setCountry('')
 			setDiller('')
 		} catch (error) {
 			console.log(error)
-			tg.sendData(JSON.stringify({ error }))
 		}
-	}, [serialCode, country, diller, tg])
+	}, [idToken, serialCode, country, diller, tg])
 
 	// Подписка на событие нажатия на main телеграм кнопку
 	React.useEffect(() => {

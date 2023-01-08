@@ -96,6 +96,7 @@ bot.on("message", async (msg) => {
     // Получаем всех админов
     const adminUsers = await FbAdmin.getUsersDocsWhere("group", "admin");
     // Получение пользователя, который пытается авторизоваться
+		console.log(data)
 		const decodeToken = await	admin.auth().verifyIdToken(data.idToken)
 		console.log(decodeToken)
     const currentUser = decodeToken.uid ? await FbAdmin.getUserDoc(`${msg.chat?.id}`) : null;

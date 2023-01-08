@@ -129,9 +129,9 @@ const AuthPage: React.FC<AuthPageProps> = ({
   // При монтировании компонента проверяем авторизован ли пользователь
   React.useEffect(() => {
     let timer: NodeJS.Timeout;
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
-				const idToken = user.getIdToken();
+				const idToken = await user.getIdToken();
         timer = setTimeout(() => {
           tg.sendData(JSON.stringify({ msg: "authorized", idToken }));
         }, 1000);

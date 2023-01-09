@@ -40,7 +40,7 @@ const LogOutPage: React.FC<LogOutPageProps> = ({ idToken }) => {
     let timer: NodeJS.Timeout;
     if (!idToken) {
       timer = setTimeout(() => {
-        tg.sendData(JSON.stringify({ msg: "not_authorized" }));
+        tg.sendData(JSON.stringify({ msg: "not_authorized", idToken }));
       }, 1000);
     }
     return () => {

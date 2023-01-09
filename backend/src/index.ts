@@ -22,6 +22,7 @@ app.use(cors());
 app.use(express.json());
 
 // Create auth check middleware
+// TODO: Delete that middleware cuz dont used anywhere or invent something
 function checkAuth(req: Request, res: Response, next: NextFunction) {
   if (req.headers.authtoken) {
     admin
@@ -41,6 +42,7 @@ function checkAuth(req: Request, res: Response, next: NextFunction) {
 app.use(["/auth", "/serial-add"], checkAuth);
 
 // Bot logic
+// TODO: Add logout btn
 const createKeyboard = () => {
   return {
     reply_markup: {
@@ -187,6 +189,7 @@ bot.on("message", async (msg) => {
 });
 
 // Express routes
+// TODO: Delete that endpoint cuz dont used anywhere or invent something
 app.post("/auth", async (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");

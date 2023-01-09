@@ -10,6 +10,7 @@ import { useTelegram } from "./hooks/useTelegram";
 import SerialCodePage from "./pages/SerialCodePage/SerialCodePage";
 import SerialCodePageAdd from "./pages/SerialCodePage/SerialCodePageAdd";
 import ChatModal from "./components/ChatModal/ChatModal";
+import LogOutPage from "./pages/LogOutPage/LogOutPage";
 
 function App() {
   const [idToken, setIdToken] = React.useState("");
@@ -47,6 +48,7 @@ function App() {
           element={<SerialCodePageAdd idToken={idToken} />}
         />
         <Route path="/auth" element={<AuthPage />} />
+				<Route path="/logout" element={<LogOutPage />} />
       </Routes>
     </div>
   );

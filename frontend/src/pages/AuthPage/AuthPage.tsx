@@ -119,6 +119,7 @@ const AuthPage = () => {
   }, [tg.MainButton, email, phone, code]);
 
   // При монтировании компонента проверяем авторизован ли пользователь
+	// TODO: Нет смысла делать еще один аус обсервер тут, т.к. в аппе уже есть обсервер и токен, если пользователь автроизован. Тут нужно просто проверить этот токен
   React.useEffect(() => {
     let timer: NodeJS.Timeout;
     onAuthStateChanged(auth, async (user) => {

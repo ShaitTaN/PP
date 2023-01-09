@@ -65,7 +65,6 @@ const AuthPage: React.FC<AuthPageProps> = ({ idToken }) => {
         })
       );
     } catch (error) {
-
       tg.sendData(JSON.stringify({ error, msg: "invalid_code" }));
     }
     setErrors(null);
@@ -134,7 +133,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ idToken }) => {
   // При монтировании компонента проверяем авторизован ли пользователь
   // TODO: Нет смысла делать еще один аус обсервер тут, т.к. в аппе уже есть обсервер и токен, если пользователь автроизован. Тут нужно просто проверить этот токен
   React.useEffect(() => {
-    let timer: NodeJS.Timeout;
+    // let timer: NodeJS.Timeout;
     // onAuthStateChanged(auth, async (user) => {
     //   if (user) {
     //     const idToken = await user.getIdToken();
@@ -145,17 +144,15 @@ const AuthPage: React.FC<AuthPageProps> = ({ idToken }) => {
     //     generateRecaptcha();
     //   }
     // });
-    if (idToken) {
-      timer = setTimeout(() => {
-        tg.sendData(JSON.stringify({ msg: "authorized", idToken }));
-      }, 1000);
+    // return () => {
+    // clearTimeout(timer);
+    // }
+		
+    if (idToken && idToken !== "loading") {
+      tg.sendData(JSON.stringify({ msg: "authorized", idToken }));
     } else {
       generateRecaptcha();
     }
-
-    return () => {
-      clearTimeout(timer);
-    };
   }, [tg, idToken]);
 
   return (

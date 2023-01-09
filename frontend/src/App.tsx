@@ -13,7 +13,7 @@ import ChatModal from "./components/ChatModal/ChatModal";
 import LogOutPage from "./pages/LogOutPage/LogOutPage";
 
 function App() {
-  const [idToken, setIdToken] = React.useState("");
+  const [idToken, setIdToken] = React.useState("loading");
   const [chatIsOpen, setChatIsOpen] = React.useState(true);
   const { tg } = useTelegram();
 

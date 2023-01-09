@@ -48,7 +48,7 @@ function App() {
           element={<SerialCodePageAdd idToken={idToken} />}
         />
         <Route path="/auth" element={<AuthPage idToken={idToken} />} />
-				<Route path="/logout" element={<LogOutPage />} />
+				<Route path="/logout" element={<LogOutPage idToken={idToken} />} />
       </Routes>
     </div>
   );

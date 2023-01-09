@@ -176,6 +176,11 @@ bot.on("message", async (msg) => {
 				
 				case 'logoutError':
 					console.log('logoutError', data.error);
+					break
+				
+				case 'not_authorized':
+					bot.sendMessage(chatId, 'Вы еще не авторизованы');
+					break;
     }
   }
 });

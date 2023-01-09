@@ -62,7 +62,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ idToken }) => {
           result,
           email,
           msg: "authorization",
-          idToken: result.user.uid,
+          idToken: result._tokenResponse.idToken,
         })
       );
     } catch (error) {

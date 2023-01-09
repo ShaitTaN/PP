@@ -3,7 +3,11 @@ import { auth } from "../../firebase";
 import { useTelegram } from "../../hooks/useTelegram";
 import "./logoutPage.css";
 
-const LogOutPage = () => {
+interface LogOutPageProps {
+  idToken: string;
+}
+
+const LogOutPage: React.FC<LogOutPageProps> = ({ idToken }) => {
   const { tg } = useTelegram();
 
   const onLogOut = React.useCallback(async () => {
@@ -15,6 +19,7 @@ const LogOutPage = () => {
     }
   }, [tg]);
 
+  // Подписка на событие нажатия на main телеграм кнопку
   React.useEffect(() => {
     tg.onEvent("mainButtonClicked", onLogOut);
     return () => {
@@ -30,6 +35,18 @@ const LogOutPage = () => {
       tg?.MainButton.hide();
     };
   }, [tg.MainButton]);
+
+  React.useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (!idToken) {
+      timer = setTimeout(() => {
+        tg.sendData(JSON.stringify({ msg: "not_authorized" }));
+      }, 1000);
+    }
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [tg, idToken]);
 
   return (
     <div className="logoutPage">

@@ -15,7 +15,7 @@ import LogOutPage from "./pages/LogOutPage/LogOutPage";
 function App() {
   const [idToken, setIdToken] = React.useState("");
   const [chatIsOpen, setChatIsOpen] = React.useState(true);
-  const { user: tgUser, tg } = useTelegram();
+  const { tg } = useTelegram();
 
   // При монтировании компонента App, проверяем авторизован ли пользователь
   React.useEffect(() => {
@@ -25,6 +25,7 @@ function App() {
         try {
           const idToken = await user.getIdToken(true);
           setIdToken(idToken);
+					console.log(idToken);
         } catch (error) {
           console.log(error);
         }
@@ -32,7 +33,7 @@ function App() {
         setIdToken("");
       }
     });
-  }, [tgUser, tg]);
+  }, [tg]);
 
   return (
     <div className="wrapper">
@@ -48,7 +49,7 @@ function App() {
           element={<SerialCodePageAdd idToken={idToken} />}
         />
         <Route path="/auth" element={<AuthPage idToken={idToken} />} />
-				<Route path="/logout" element={<LogOutPage idToken={idToken} />} />
+        <Route path="/logout" element={<LogOutPage idToken={idToken} />} />
       </Routes>
     </div>
   );

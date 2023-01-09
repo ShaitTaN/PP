@@ -39,12 +39,12 @@ const createKeyboard = () => {
             web_app: { url: webAppUrl + "/serial-add" },
           },
         ],
-				[
-					{
-						text: "Выход",
-						web_app: { url: webAppUrl + "/logout" },
-					}
-				]
+        [
+          {
+            text: "Выход",
+            web_app: { url: webAppUrl + "/logout" },
+          },
+        ],
       ],
     },
   };
@@ -91,13 +91,13 @@ bot.on("message", async (msg) => {
     } catch (error) {
       console.log(error);
     }
-    console.log('authUID - ', authUID);
-		// Если пользователь авторизован, получаем его 
+    console.log("authUID - ", authUID);
+    // Если пользователь авторизован, получаем его
     const currentUser = authUID
       ? await FbAdmin.getUserDoc(`${msg.chat?.id}`)
       : null;
     const userGroup = currentUser ? currentUser.group : "user";
-    console.log('userGroup - ', userGroup);
+    console.log("userGroup - ", userGroup);
 
     switch (data.msg) {
       case "add_serial_code":
@@ -170,17 +170,17 @@ bot.on("message", async (msg) => {
         }
         break;
 
-				case 'logout':
-					bot.sendMessage(chatId, 'Вы вышли из аккаунта');
-					break;
-				
-				case 'logoutError':
-					console.log('logoutError', data.error);
-					break
-				
-				case 'not_authorized':
-					bot.sendMessage(chatId, 'Вы еще не авторизованы');
-					break;
+      case "logout":
+        bot.sendMessage(chatId, "Вы вышли из аккаунта");
+        break;
+
+      case "logoutError":
+        console.log("logoutError", data.error);
+        break;
+
+      case "not_authorized":
+        bot.sendMessage(chatId, "Вы еще не авторизованы");
+        break;
     }
   }
 });

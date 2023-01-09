@@ -44,12 +44,12 @@ function App() {
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/serial" element={<SerialCodePage />} />
+				<Route path="/logout" element={<LogOutPage idToken={idToken} />} />
         <Route
           path="/serial-add"
           element={<SerialCodePageAdd idToken={idToken} />}
         />
         <Route path="/auth" element={<AuthPage idToken={idToken} />} />
-        <Route path="/logout" element={<LogOutPage idToken={idToken} />} />
       </Routes>
     </div>
   );

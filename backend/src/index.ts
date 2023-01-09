@@ -21,28 +21,7 @@ const emitter = new events.EventEmitter();
 app.use(cors());
 app.use(express.json());
 
-// Create auth check middleware
-// TODO: Delete that middleware cuz dont used anywhere or invent something
-function checkAuth(req: Request, res: Response, next: NextFunction) {
-  if (req.headers.authtoken) {
-    admin
-      .auth()
-      .verifyIdToken(req.headers.authtoken as string)
-      .then(() => {
-        next();
-      })
-      .catch(() => {
-        res.status(403).send("Unauthorized!");
-      });
-  } else {
-    res.status(403).send("Unauthorized!");
-    return;
-  }
-}
-app.use(["/auth", "/serial-add"], checkAuth);
-
 // Bot logic
-// TODO: Add logout btn
 const createKeyboard = () => {
   return {
     reply_markup: {
@@ -60,6 +39,12 @@ const createKeyboard = () => {
             web_app: { url: webAppUrl + "/serial-add" },
           },
         ],
+				[
+					{
+						text: "Выход",
+						web_app: { url: webAppUrl + "/logout" },
+					}
+				]
       ],
     },
   };
@@ -184,36 +169,18 @@ bot.on("message", async (msg) => {
           });
         }
         break;
+
+				case 'logout':
+					bot.sendMessage(chatId, 'Вы вышли из аккаунта');
+					break;
+				
+				case 'logoutError':
+					console.log('logoutError', data.error);
     }
   }
 });
 
 // Express routes
-// TODO: Delete that endpoint cuz dont used anywhere or invent something
-app.post("/auth", async (req, res) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, application/json"
-  );
-  res.header("Content-Type", "application/json");
-  const uid = req.body.uid;
-  let userGroup = "user";
-  console.log(req.body);
-  if (uid) {
-    const users = await FbAdmin.getUsersDocsWhere("uid", uid);
-    users?.forEach((doc) => {
-      userGroup = doc.data().group;
-    });
-  }
-  res.json({
-    message: "Auth ok!",
-    userGroup: userGroup,
-  });
-  res.end();
-});
-
 app.post("/serial", async (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");

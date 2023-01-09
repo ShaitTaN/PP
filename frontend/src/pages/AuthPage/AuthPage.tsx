@@ -7,9 +7,9 @@ import { auth } from "../../firebase";
 import {
   RecaptchaVerifier,
   signInWithPhoneNumber,
-  onAuthStateChanged,
+  // onAuthStateChanged,
 } from "firebase/auth";
-import {z} from "zod";
+import { z } from "zod";
 
 declare global {
   interface Window {
@@ -20,55 +20,68 @@ declare global {
 
 // ZOD схемы для валидации
 const formSchema = z.object({
-	email: z.string().email('Некорректный email'),
-	phone: z.string().regex(/^\+7\d{10}$/, "Номер телефона должен быть в формате +7XXXXXXXXXX"),
-	code: z.string().regex(/^\d{6}$/, "Код должен состоять из 6 цифр"),
+  email: z.string().email("Некорректный email"),
+  phone: z
+    .string()
+    .regex(/^\+7\d{10}$/, "Номер телефона должен быть в формате +7XXXXXXXXXX"),
+  code: z.string().regex(/^\d{6}$/, "Код должен состоять из 6 цифр"),
 });
 const phoneSchema = z.object({
-	phone: z.string().regex(/^\+7\d{10}$/, "Номер телефона должен быть в формате +7XXXXXXXXXX"),
+  phone: z
+    .string()
+    .regex(/^\+7\d{10}$/, "Номер телефона должен быть в формате +7XXXXXXXXXX"),
 });
 
+interface AuthPageProps {
+  idToken: string;
+}
 
-const AuthPage = () => {
+const AuthPage: React.FC<AuthPageProps> = ({ idToken }) => {
   const [email, setEmail] = React.useState("");
   const [phone, setPhone] = React.useState("+7");
   const [code, setCode] = React.useState("");
   const [isHintActive, setIsHintActive] = React.useState(false);
-	const [errors, setErrors] = React.useState<any>();
+  const [errors, setErrors] = React.useState<any>();
   const { tg } = useTelegram();
 
   // Коллбэк для отправки данных боту
-  const onSendData = React.useCallback(() => {
-		const validation = formSchema.safeParse({ email, phone,code });
-		if (!validation.success) {
-			const validationErrors = validation.error.format();
-			setErrors(validationErrors);
-			return
-		}
+  const onSendData = React.useCallback(async () => {
+    const validation = formSchema.safeParse({ email, phone, code });
+    if (!validation.success) {
+      const validationErrors = validation.error.format();
+      setErrors(validationErrors);
+      return;
+    }
 
     const confirmationResult = window.confirmationResult;
-    confirmationResult
-      .confirm(code)
-      .then((result: any) => {
-        tg.sendData(JSON.stringify({ result, email, msg: "authorization", idToken: result.user.uid }));
-      })
-      .catch((error: Error) => {
-        tg.sendData(JSON.stringify({ error, msg: "invalid_code" }));
-      });
-			setErrors(null);
+
+    try {
+      const result = await confirmationResult.confirm(code);
+      tg.sendData(
+        JSON.stringify({
+          result,
+          email,
+          msg: "authorization",
+          idToken: result.user.uid,
+        })
+      );
+    } catch (error) {
+      tg.sendData(JSON.stringify({ error, msg: "invalid_code" }));
+    }
+    setErrors(null);
   }, [tg, code, email, phone]);
 
   // Отправка кода на телефон
   const onSendCode = () => {
-		const validation = phoneSchema.safeParse({ phone });
-		if (!validation.success) {
-			console.log(validation.error.format());
-			const validationErrors = validation.error.format();
-			setErrors(validationErrors);
-			return
-		}
-		setErrors(null)
-		setIsHintActive(true);
+    const validation = phoneSchema.safeParse({ phone });
+    if (!validation.success) {
+      console.log(validation.error.format());
+      const validationErrors = validation.error.format();
+      setErrors(validationErrors);
+      return;
+    }
+    setErrors(null);
+    setIsHintActive(true);
     const appVerifier = window.recaptchaVerifier;
 
     signInWithPhoneNumber(auth, phone, appVerifier)
@@ -119,24 +132,31 @@ const AuthPage = () => {
   }, [tg.MainButton, email, phone, code]);
 
   // При монтировании компонента проверяем авторизован ли пользователь
-	// TODO: Нет смысла делать еще один аус обсервер тут, т.к. в аппе уже есть обсервер и токен, если пользователь автроизован. Тут нужно просто проверить этот токен
+  // TODO: Нет смысла делать еще один аус обсервер тут, т.к. в аппе уже есть обсервер и токен, если пользователь автроизован. Тут нужно просто проверить этот токен
   React.useEffect(() => {
     let timer: NodeJS.Timeout;
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-				const idToken = await user.getIdToken();
-        timer = setTimeout(() => {
-          tg.sendData(JSON.stringify({ msg: "authorized", idToken }));
-        }, 1000);
-      } else {
-        generateRecaptcha();
-      }
-    });
+    // onAuthStateChanged(auth, async (user) => {
+    //   if (user) {
+    //     const idToken = await user.getIdToken();
+    //     timer = setTimeout(() => {
+    //       tg.sendData(JSON.stringify({ msg: "authorized", idToken }));
+    //     }, 1000);
+    //   } else {
+    //     generateRecaptcha();
+    //   }
+    // });
+    if (idToken) {
+      timer = setTimeout(() => {
+        tg.sendData(JSON.stringify({ msg: "authorized", idToken }));
+      }, 1000);
+    } else {
+      generateRecaptcha();
+    }
 
     return () => {
       clearTimeout(timer);
     };
-  }, [tg]);
+  }, [tg, idToken]);
 
   return (
     <div className="authPage">
@@ -145,13 +165,13 @@ const AuthPage = () => {
         placeholder="Почта:"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-				error={errors?.email?._errors.join(", ")}
+        error={errors?.email?._errors.join(", ")}
       />
       <FormInput
         placeholder="Телефон:"
         value={phone}
         onChange={(e) => setPhone(e.target.value)}
-				error={errors?.phone?._errors.join(", ")}
+        error={errors?.phone?._errors.join(", ")}
       />
       <div className="authPage__checkCode">
         <MainButton

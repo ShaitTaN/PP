@@ -62,10 +62,10 @@ const AuthPage: React.FC<AuthPageProps> = ({ idToken }) => {
           result,
           email,
           msg: "authorization",
-          idToken: result._tokenResponse.idToken,
         })
       );
     } catch (error) {
+
       tg.sendData(JSON.stringify({ error, msg: "invalid_code" }));
     }
     setErrors(null);

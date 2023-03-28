@@ -12,12 +12,6 @@ interface SerialCode {
   date: string;
 }
 
-declare global {
-  interface Window {
-    Telegram?: any;
-  }
-}
-
 const SerialCodePage = () => {
   const [serialCode, setSerialCode] = React.useState("");
   const [data, setData] = React.useState<SerialCode | null>(null);

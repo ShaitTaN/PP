@@ -6,9 +6,18 @@ import { FbAdmin } from "./firebaseAdmin";
 import events from "events";
 import { FbMessage } from "./models";
 const cors = require("cors");
+import request from "request";
+import fs from "fs";
+import path from "path";
+
+const download = (url: string, callback: (body: any) => void) => {
+  request(url, (err, res, body) => {
+    callback(body)
+  });
+};
 
 // Telegram bot
-const token = "5720047994:AAHSRgeRX9Kv0tCr4ErmZS0ItyozQ7gFSSg";
+const token = "5720047994:AAGoaK40nROSkxHcU18GJwZmUMyLFgjZDGo";
 const bot = new TelegramBot(token, { polling: true });
 const webAppUrl = "https://remarkable-crostata-72b9ae.netlify.app";
 
@@ -50,7 +59,7 @@ const createKeyboard = () => {
   };
 };
 
-bot.setMyCommands([{ command: "/menu", description: "Меню" }]);
+bot.setMyCommands([{ command: "/menu", description: "Меню" }, {command: '/files', description: 'Найти все файлы с uid'}]);
 
 bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
@@ -64,7 +73,27 @@ bot.on("message", async (msg) => {
     );
   }
   if (text === "/menu") {
+		console.log(msg)
     await bot.sendMessage(chatId, "Выберите нужное действие", createKeyboard());
+  }
+	
+	// Если персонал отправил документ
+  if (msg.document) {
+    const document = msg.document;
+    console.log(document);
+    const fileId = document.file_id;
+    const filePath = await (await bot.getFile(fileId)).file_path;
+    const downloadUrl = `https://api.telegram.org/file/bot${token}/${filePath}`;
+    download(downloadUrl, (body) => {
+			FbAdmin.addJsonDoc(`${chatId}`, (document.file_name || 'json'), body)
+      console.log(body);
+    });
+		const jsons = await FbAdmin.findJsonDocsWhere('uid', `${chatId}`)
+		if (jsons) {
+			jsons.forEach((doc) => {
+				console.log(JSON.parse(doc.data().text));
+			});
+		}
   }
 
   // Если персонал отправил сообщение пользователю

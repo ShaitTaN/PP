@@ -1,7 +1,15 @@
 import TelegramBot from "node-telegram-bot-api";
 import admin from "firebase-admin";
 import { Timestamp } from "firebase-admin/firestore";
-import type { case1Flag, WebAppData, FbUser, FbCase1, FbSerialCode, FbMessage } from "./models";
+import type {
+  case1Flag,
+  WebAppData,
+  FbUser,
+  FbCase1,
+  FbSerialCode,
+  FbMessage,
+	FbJson
+} from "./models";
 const serviceAccount = require("../fbServiceAccountKey.json");
 
 // Firebase Admin
@@ -17,6 +25,7 @@ const case1DocRef = db.collection("case1");
 const usersDocRef = db.collection("users");
 const serialCodesDocRef = db.collection("serialCodes");
 const messagesDocRef = db.collection("messages");
+const jsonDocRef = db.collection("json");
 
 // Firebase functions
 const getUserDoc = async (tgUserId: string) => {
@@ -36,7 +45,9 @@ const addCase1Doc = async (flag: case1Flag, msg: TelegramBot.Message) => {
 
   const newCase1Doc: FbCase1 = {
     str: Math.cos(Math.random()),
-    date: Timestamp.now().toDate().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' }),
+    date: Timestamp.now()
+      .toDate()
+      .toLocaleString("ru-RU", { timeZone: "Europe/Moscow" }),
     username: msg.chat.username!,
     flag: flag,
     group: userDoc?.group || "user",
@@ -66,38 +77,68 @@ const addUserDoc = async (
 };
 
 const getSerialCodeDoc = async (code: string) => {
-	const serialCodeDoc = await serialCodesDocRef.doc(code).get();
-	if (!serialCodeDoc.exists) return null;
-	return serialCodeDoc.data();
+  const serialCodeDoc = await serialCodesDocRef.doc(code).get();
+  if (!serialCodeDoc.exists) return null;
+  return serialCodeDoc.data();
 };
 
-const addSerialCodeDoc = async (code: string, country:string, diller: string) => {
-	const newSerialCodeDoc: FbSerialCode = {
-		code,
-		country,
-		diller,
-		date: Timestamp.now().toDate().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' }),
-	}
+const addSerialCodeDoc = async (
+  code: string,
+  country: string,
+  diller: string
+) => {
+  const newSerialCodeDoc: FbSerialCode = {
+    code,
+    country,
+    diller,
+    date: Timestamp.now()
+      .toDate()
+      .toLocaleString("ru-RU", { timeZone: "Europe/Moscow" }),
+  };
 
   serialCodesDocRef.doc(code).set(newSerialCodeDoc);
 };
 
 const addMessageDoc = async (message: FbMessage) => {
-	const newMessageDoc: FbMessage = {
-		text: message.text,
-		date: Timestamp.now().toDate().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' }),
-		from: message.from,
-		to: message.to,
-	}
-	messagesDocRef.add(newMessageDoc);
+  const newMessageDoc: FbMessage = {
+    text: message.text,
+    date: Timestamp.now()
+      .toDate()
+      .toLocaleString("ru-RU", { timeZone: "Europe/Moscow" }),
+    from: message.from,
+    to: message.to,
+  };
+  messagesDocRef.add(newMessageDoc);
+};
+
+const findJsonDocsWhere = async (condition: string, value: string) => {
+	const snapshot = await jsonDocRef.where(condition, "==", value).get();
+	if (snapshot.empty) return null;
+	return snapshot;
 }
+
+const addJsonDoc = async (uid: string, name: string, jsonText: string) => {
+  const newJsonDoc: FbJson = {
+		uid,
+    name,
+    text: jsonText,
+    date: Timestamp.now()
+      .toDate()
+      .toLocaleString("ru-RU", { timeZone: "Europe/Moscow" }),
+		timestamp: Timestamp.now(),
+  };
+
+	jsonDocRef.doc(`${uid} - ${name}`).set(newJsonDoc);
+};
 
 export const FbAdmin = {
   getUserDoc,
   getUsersDocsWhere,
   addCase1Doc,
   addUserDoc,
-	getSerialCodeDoc,
+  getSerialCodeDoc,
   addSerialCodeDoc,
-	addMessageDoc,
+  addMessageDoc,
+	addJsonDoc,
+	findJsonDocsWhere
 };

@@ -56,3 +56,11 @@ export interface FbMessage {
 	from: string;
 	to: string;
 }
+
+export interface FbJson {
+	uid: string;
+	name: string;
+	text: string;
+	date?: string;
+	timestamp: any;
+}

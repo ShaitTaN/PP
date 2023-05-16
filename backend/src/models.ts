@@ -61,6 +61,13 @@ export interface FbJson {
 	uid: string;
 	name: string;
 	text: string;
-	date?: string;
+	date: string;
+	timestamp: any;
+	fileId: string;
+}
+export interface FbLog {
+	uid: string;
+	text: string;
+	date: string;
 	timestamp: any;
 }

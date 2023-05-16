@@ -8,7 +8,8 @@ import type {
   FbCase1,
   FbSerialCode,
   FbMessage,
-	FbJson
+  FbJson,
+  FbLog,
 } from "./models";
 const serviceAccount = require("../fbServiceAccountKey.json");
 
@@ -26,6 +27,7 @@ const usersDocRef = db.collection("users");
 const serialCodesDocRef = db.collection("serialCodes");
 const messagesDocRef = db.collection("messages");
 const jsonDocRef = db.collection("json");
+const logsDocRef = db.collection("logs");
 
 // Firebase functions
 const getUserDoc = async (tgUserId: string) => {
@@ -112,23 +114,37 @@ const addMessageDoc = async (message: FbMessage) => {
 };
 
 const findJsonDocsWhere = async (condition: string, value: string) => {
-	const snapshot = await jsonDocRef.where(condition, "==", value).get();
-	if (snapshot.empty) return null;
-	return snapshot;
-}
+  const snapshot = await jsonDocRef.where(condition, "==", value).get();
+  if (snapshot.empty) return null;
+  return snapshot;
+};
 
-const addJsonDoc = async (uid: string, name: string, jsonText: string) => {
+const addJsonDoc = async (uid: string, name: string, jsonText: string, fileId: string) => {
   const newJsonDoc: FbJson = {
-		uid,
+    uid,
     name,
     text: jsonText,
+		fileId,
     date: Timestamp.now()
       .toDate()
       .toLocaleString("ru-RU", { timeZone: "Europe/Moscow" }),
-		timestamp: Timestamp.now(),
+    timestamp: Timestamp.now(),
   };
 
-	jsonDocRef.doc(`${uid} - ${name}`).set(newJsonDoc);
+  jsonDocRef.doc(`${uid} - ${name}`).set(newJsonDoc);
+};
+
+const addLogDoc = async (chatId: string, text: string) => {
+  const newLogDoc: FbLog = {
+    uid: chatId,
+    text,
+    date: Timestamp.now()
+      .toDate()
+      .toLocaleString("ru-RU", { timeZone: "Europe/Moscow" }),
+    timestamp: Timestamp.now(),
+  };
+
+	logsDocRef.add(newLogDoc);
 };
 
 export const FbAdmin = {
@@ -139,6 +155,7 @@ export const FbAdmin = {
   getSerialCodeDoc,
   addSerialCodeDoc,
   addMessageDoc,
-	addJsonDoc,
-	findJsonDocsWhere
+  addJsonDoc,
+  findJsonDocsWhere,
+	addLogDoc
 };

@@ -1,57 +1,60 @@
-import React from 'react'
-import FormInput from '../../components/FormInput/FormInput'
-import { useTelegram } from '../../hooks/useTelegram'
-import './serialCodePage.css'
+import React from "react";
+import FormInput from "../../components/FormInput/FormInput";
+import { useTelegram } from "../../hooks/useTelegram";
+import "./serialCodePage.css";
 
-interface SerialCodePageAddProps {
-	idToken: string
-}
+// interface SerialCodePageAddProps {
+// 	idToken: string
+// }
 
-const SerialCodePageAdd: React.FC<SerialCodePageAddProps> = ({idToken}) => {
-	const [serialCode, setSerialCode] = React.useState('')
-	const [country, setCountry] = React.useState('')
-	const [diller, setDiller] = React.useState('')
-	const {tg} = useTelegram()
+const SerialCodePageAdd: React.FC = () => {
+  const [serialCode, setSerialCode] = React.useState("");
+  const [country, setCountry] = React.useState("");
+  const [diller, setDiller] = React.useState("");
+  const { tg } = useTelegram();
 
-	const onAddSerialCode = React.useCallback(async () => {
-		try {
-			tg.sendData(JSON.stringify({ idToken, serialCode, country, diller, msg: 'add_serial_code' }));
-			setSerialCode('')
-			setCountry('')
-			setDiller('')
-		} catch (error) {
-			console.log(error)
-		}
-	}, [idToken, serialCode, country, diller, tg])
+  const onAddSerialCode = React.useCallback(async () => {
+    try {
+      // tg.sendData(JSON.stringify({ idToken, serialCode, country, diller, msg: 'add_serial_code' }));
+      tg.sendData(
+        JSON.stringify({ serialCode, country, diller, msg: "add_serial_code" })
+      );
+      setSerialCode("");
+      setCountry("");
+      setDiller("");
+    } catch (error) {
+      console.log(error);
+    }
+  }, [serialCode, country, diller, tg]);
 
-	// Подписка на событие нажатия на main телеграм кнопку
-	React.useEffect(() => {
-		tg.onEvent("mainButtonClicked", onAddSerialCode);
-		return () => {
-			tg.offEvent("mainButtonClicked", onAddSerialCode);
-		};
-	}, [tg, onAddSerialCode]);
+  // Подписка на событие нажатия на main телеграм кнопку
+  React.useEffect(() => {
+    tg.onEvent("mainButtonClicked", onAddSerialCode);
+    return () => {
+      tg.offEvent("mainButtonClicked", onAddSerialCode);
+    };
+  }, [tg, onAddSerialCode]);
 
-	// Изменение текста main телеграм кнопки и ее отображение
-	React.useEffect(() => {
-		tg?.MainButton.setParams({ text: "Добавить" });
-		tg?.MainButton.show();
-		return () => {
-			tg?.MainButton.hide();
-		};
-	}, [tg.MainButton]);
+  // Изменение текста main телеграм кнопки и ее отображение
+  React.useEffect(() => {
+    tg?.MainButton.setParams({ text: "Добавить" });
+    tg?.MainButton.show();
+    return () => {
+      tg?.MainButton.hide();
+    };
+  }, [tg.MainButton]);
 
-	// Отключение main телеграм кнопки при незаполненных полях
-	React.useEffect(() => {
-		if (!serialCode || !country || !diller) {
-			tg?.MainButton.disable();
-		} else {
-			tg?.MainButton.enable();
-		}
-	}, [tg.MainButton, serialCode, country, diller]);
+  // Отключение main телеграм кнопки при незаполненных полях
+  React.useEffect(() => {
+    if (!serialCode || !country || !diller) {
+      tg?.MainButton.disable();
+    } else {
+      tg?.MainButton.enable();
+    }
+  }, [tg.MainButton, serialCode, country, diller]);
 
-	return (
-		<div className="serialCodePage">
+  return (
+    <div className="serialCodePage">
       <h2>Введите данные для добавления серийного номера</h2>
       <div className="serialCodePage__input">
         <FormInput
@@ -71,7 +74,7 @@ const SerialCodePageAdd: React.FC<SerialCodePageAddProps> = ({idToken}) => {
         />
       </div>
     </div>
-	)
-}
+  );
+};
 
-export default SerialCodePageAdd
+export default SerialCodePageAdd;

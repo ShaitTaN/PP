@@ -1,3 +1,4 @@
+redis-server
 cd /home/proj
 cd PP/backend
 npm i

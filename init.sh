@@ -3,8 +3,8 @@ yum update
 yum install curl -y 
 curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash - 
 source ~/.bashrc
-nvm install 16
-nvm use 16
+nvm install 8.17.0
+nvm use 8.17.0
 # redis install
 yum install epel-release
 yum install redis -y
